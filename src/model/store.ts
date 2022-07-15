@@ -6,13 +6,20 @@ export interface UserProps{
   isAnonymous?:boolean |null
 }
 
+export enum ErrorType{
+  ERROR= 'error',
+  WARINIG = 'warinig'
+}
+
 interface StoreProps{
     counter:number
-    user:UserProps | null
+    user:UserProps | null,
+    error:{message:string, type:ErrorType} | null
 }
 const store:StoreProps = {
   counter: 0,
-  user: null
+  user: null,
+  error:null
 };
 
 export default store;
