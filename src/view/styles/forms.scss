@@ -1,0 +1,22 @@
+form {
+  display: flex;
+  flex-direction: column;
+  label{
+    margin-top: 10px;
+  }
+  textarea{
+    min-height: 8rem;
+  }
+}
+input,
+textarea,
+select {
+  font-family: "Varela Round", sans-serif;
+  border-radius: var(--roundBorderSmall);
+  background-color: var(--gray5);
+  font-size: var(--size11);
+  border: none;
+  padding: var(--regPadding);
+  font-size: var(--size17);
+  margin: 5px 0px;
+}

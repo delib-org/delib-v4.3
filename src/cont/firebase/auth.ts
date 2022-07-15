@@ -26,7 +26,9 @@ export function AnonymousLogin() {
 }
 
 export function onAuth() {
+  console.time('start')
   onAuthStateChanged(auth, (user) => {
+    console.timeEnd('start')
     try {
       if (user) {
         // getSubscriptions();
@@ -43,6 +45,7 @@ export function onAuth() {
         redirect();
       } else {
         console.info("User is signed out.");
+        store.user = null;
       }
     } catch (err) {
       console.error(err);

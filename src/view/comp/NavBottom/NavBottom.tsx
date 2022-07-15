@@ -1,27 +1,35 @@
-import m from "mithril";
+import m, { Component,Vnode } from "mithril";
 // import "./NavBottom.css";
 
 //functions
 
 //data
-interface menuItemProps{
-text:string;
+interface menuItemProps {
+  text: string;
 }
-const menuItems:menuItemProps[] = [
-    {text:'feed'},
-    {text:'groups'},
-    {text:'chats'},
-    {text:'settings'}
-]
+const menuItems: menuItemProps[] = [
+  { text: "feed" },
+  { text: "groups" },
+  { text: "chats" },
+  { text: "settings" },
+];
 
-export default function NavBottom() {
+interface Attrs {
+ 
+}
+interface States{
+
+}
+
+export default function NavBottom(): Component<Attrs,States> {
   return {
     view: () => (
       <nav class="navBottom footer">
-        {menuItems.map((item, i:number)=>(
-        <div key={i} className="navBottom__item">
+      
+        {menuItems.map((item, i: number) => (
+          <div key={i} className="navBottom__btn">
             {item.text}
-        </div>
+          </div>
         ))}
       </nav>
     ),
