@@ -26,10 +26,13 @@ export async function setConsultation(consultationObj: SetConsultationProps) {
         time:{
             created:serverTimestamp(),
             updated:serverTimestamp()
-        }
+        },
+        news:[
+            {text:'התייעצות נוצרה', update:serverTimestamp()}
+        ]
     })
 
-    console.log(docRef)
+    console.log(docRef.id)
 
   } catch (error:any) {
     console.error(error);

@@ -1,8 +1,10 @@
 import m from "mithril";
+import { listenToConsultations } from "../../../cont/firebase/consultations/getConsultations";
 import store from "../../../model/store";
 
 //components
 import NavBottom from "../../comp/NavBottom/NavBottom";
+import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
 import SetConsultation from "../setConsultation/SetConsultation";
 import HomeCreate from "./HomeCreate";
 
@@ -15,7 +17,14 @@ export default function Home() {
     function add(){
         store.counter++
     }
+    let unsub = ()=>{};
     return {
+        oninit:()=>{
+           unsub= listenToConsultations()
+        },
+        onremove:()=>{
+            unsub();
+        },
         view: () => (
             <div className="page">
             <main class="page__main">
@@ -28,6 +37,7 @@ export default function Home() {
                 <button onclick={add}>ADD</button>
             </main>
             <NavBottom />
+            <SystemMessage />
             </div>
         ),
     };
