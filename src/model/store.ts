@@ -1,3 +1,5 @@
+import { Consultation } from "./consultationModel";
+
 export interface UserProps{
   displayName:string |null,
   uid?:string |null,
@@ -15,11 +17,13 @@ interface StoreProps{
     counter:number
     user:UserProps | null,
     error:{message:string, type:ErrorType} | null
+    consultations:Consultation[]
 }
 const store:StoreProps = {
   counter: 0,
   user: null,
-  error:null
+  error:null,
+  consultations:[]
 };
 
 export default store;

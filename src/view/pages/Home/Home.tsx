@@ -5,7 +5,6 @@ import store from "../../../model/store";
 //components
 import NavBottom from "../../comp/NavBottom/NavBottom";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
-import SetConsultation from "../setConsultation/SetConsultation";
 import HomeCreate from "./HomeCreate";
 
 const consultations = []

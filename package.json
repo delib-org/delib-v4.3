@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "firebase": "^9.9.0",
+    "joi": "^17.6.0",
     "mithril": "^2.2.2",
     "sass": "^1.53.0"
   },
