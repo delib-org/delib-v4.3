@@ -9,6 +9,8 @@ import {
 import { firebaseApp } from "./config";
 import store from "../../model/store";
 import { redirect } from "../general/authCont";
+import listenToMemberships from "./consultations/getMemberships";
+import { clenaMembership } from "../general/membershipCont";
 
 const auth = getAuth(firebaseApp);
 
@@ -25,6 +27,7 @@ export function AnonymousLogin() {
     });
 }
 
+let unsubMembership:Function=()=>{};
 export function onAuth() {
 
   onAuthStateChanged(auth, (user) => {
@@ -41,12 +44,16 @@ export function onAuth() {
           isAnonymous: user.isAnonymous,
         };
         console.info("User", user.uid, "is signed in.");
-     
+        unsubMembership = listenToMemberships(user.uid);
         redirect();
       } else {
         console.info("User is signed out.");
         store.user = null;
-        redirect('/login')
+        redirect('/login');
+        
+        clenaMembership();
+        
+        unsubMembership();
       }
     } catch (err) {
       console.error(err);
