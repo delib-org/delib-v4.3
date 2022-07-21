@@ -11,13 +11,11 @@ export default function SystemMessage(){
         }
     }
     return{
-        oninit:()=>{
-            console.log('init')
-        },
+    
         view:()=>{
-            console.log(store.error)
+         
             if(store.error){
-                console.log(store.error.message)
+             
             return(
                 <div className="systemMessage" onclick={handleCloseError}>
                     {store.error.message}

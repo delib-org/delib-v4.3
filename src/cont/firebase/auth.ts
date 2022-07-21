@@ -15,7 +15,7 @@ const auth = getAuth(firebaseApp);
 export function AnonymousLogin() {
   signInAnonymously(auth)
     .then(() => {
-      console.log("Anonymous login");
+      console.info("Anonymous login");
     })
     .catch((error) => {
       // Handle Errors here.
@@ -26,13 +26,13 @@ export function AnonymousLogin() {
 }
 
 export function onAuth() {
-  console.time('start')
+
   onAuthStateChanged(auth, (user) => {
-    console.timeEnd('start')
+ 
     try {
       if (user) {
         // getSubscriptions();
-        console.log(user);
+      
         store.user = {
           displayName: user.displayName,
           uid: user.uid,
@@ -41,11 +41,12 @@ export function onAuth() {
           isAnonymous: user.isAnonymous,
         };
         console.info("User", user.uid, "is signed in.");
-        console.log(store.user)
+     
         redirect();
       } else {
         console.info("User is signed out.");
         store.user = null;
+        redirect('/login')
       }
     } catch (err) {
       console.error(err);
@@ -64,7 +65,7 @@ export function googleLogin() {
       }
       // The signed-in user info.
       //   store.user = result.user;
-      console.log(`user is logged in with google`);
+      console.info(`user is logged in with google`);
       //   let lastPage = sessionStorage.getItem("lastPage") || "/groups";
    
       // ...

@@ -25,16 +25,16 @@ const protectedRoutes: ProtectedRouteProps[] = [
 export function redirect(requestedPath?: string): void {
   try {
     const path = m.route.get();
-    console.log(path);
+  
 
     if (requestedPath) {
       m.route.set(requestedPath);
     } else {
       //in case the user try to enter a page
       const path = m.route.get();
-      console.log(path);
+    console.log(path)
     }
-    m.route.set("/home");
+    m.route.set(path);
   } catch (error) {
     console.error(error);
   }

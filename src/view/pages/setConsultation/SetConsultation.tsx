@@ -82,6 +82,7 @@ export default function SetConsultation() {
               </form>
             </div>
           </main>
+          {/* @ts-ignore */}
           <SystemMessage />
         </div>
       );

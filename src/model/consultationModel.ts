@@ -15,8 +15,9 @@ export const ConsultationSchema = Joi.object({
 export interface Consultation{
     creator:Object;
     description:string;
-    groupType:GroupType,
-    time:FirebaseTime,
-    title:string
+    groupType:GroupType;
+    time:{created:FirebaseTime, updated:FirebaseTime};
+    title:string;
+    id:string;
 }
 

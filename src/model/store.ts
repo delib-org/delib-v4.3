@@ -1,4 +1,5 @@
 import { Consultation } from "./consultationModel";
+import { FirebaseTime } from "./timeModel";
 
 export interface UserProps{
   displayName:string |null,
@@ -17,13 +18,15 @@ interface StoreProps{
     counter:number
     user:UserProps | null,
     error:{message:string, type:ErrorType} | null
-    consultations:Consultation[]
+    consultations:{groups:Consultation[],last_update:FirebaseTime|Date}
 }
 const store:StoreProps = {
   counter: 0,
   user: null,
   error:null,
-  consultations:[]
+  consultations:{groups:[],last_update:new Date(0)}
 };
 
 export default store;
+
+
