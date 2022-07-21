@@ -15,7 +15,8 @@ export enum GroupType {
 }
 
 export default function SetConsultation() {
-  function handleNewConsultation(ev: any) {
+  
+  async function handleNewConsultation(ev: any) {
     try {
       ev.preventDefault();
       const { elements } = ev.target;
@@ -28,7 +29,11 @@ export default function SetConsultation() {
         throw new Error(
           "To submit a new consultation, the user must be logged-in"
         );
-      setConsultation({ title, description, groupType });
+      const {success, consultationId} = await setConsultation({ title, description, groupType });
+      if(success){
+        m.route.set(`/consultation/${consultationId}`)
+      }
+
     } catch (error) {
       console.error(error);
     }

@@ -10,7 +10,12 @@ interface SetConsultationProps {
   groupType: GroupType;
 }
 
-export async function setConsultation(consultationObj: SetConsultationProps) {
+interface setConsultationReturn{
+  consultationId: string | null;
+  success:boolean
+}
+
+export async function setConsultation(consultationObj: SetConsultationProps):Promise<setConsultationReturn> {
   try {
     if (store.user === null) throw new Error("User must be logged-in");
 
@@ -18,7 +23,7 @@ export async function setConsultation(consultationObj: SetConsultationProps) {
         description,
         groupType} = consultationObj
 
-    const docRef = await addDoc(collection(DB,'consultations'),{
+    const consultationRef = await addDoc(collection(DB,'consultations'),{
         title,
         description,
         groupType,
@@ -26,17 +31,24 @@ export async function setConsultation(consultationObj: SetConsultationProps) {
         time:{
             created:serverTimestamp(),
             updated:serverTimestamp()
-        },
-        news:[
-            {text:'התייעצות נוצרה', update:serverTimestamp()}
-        ]
+        }
     })
 
-    console.log(docRef.id)
+    const newsRef = collection(DB,'news');
+    await addDoc(newsRef,{
+      text:'התייעצות נוצרה', 
+      update:serverTimestamp(),
+      groupId:consultationRef.id,
+      creator:store.user
+    })
+
+    return {consultationId: consultationRef.id, success:true}
 
   } catch (error:any) {
     console.error(error);
     store.error = {message:error.message, type:ErrorType.ERROR};
     m.redraw();
+
+    return {consultationId: null, success:false}
   }
 }
