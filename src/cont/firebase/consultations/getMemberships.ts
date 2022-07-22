@@ -11,6 +11,7 @@ import {
 import { DB } from "../config";
 import { updateArray } from "../../general/general";
 import { membershipSchema } from "../../../model/membershipModel";
+import { listenToConsultation } from "./getConsultations";
 
 export default function listenToMemberships(userId: string): Function {
   try {
@@ -19,31 +20,36 @@ export default function listenToMemberships(userId: string): Function {
 
     return onSnapshot(membershipsRef, (membershipsDB) => {
       try {
+        
         membershipsDB.docChanges().forEach((change) => {
           try {
-
-            const { error} = membershipSchema.validate(change.doc.data());
-            if(error) throw error;
-       
-
+        
+            const { value, error } = membershipSchema.validate(
+              change.doc.data()
+            );
+            if (error) throw error;
+         value.id = change.doc.data().groupId;
+      
+          
             if (change.type === "added") {
-              store.memberIn = updateArray(store.memberIn, change.doc.data());
+              store.memberIn = updateArray(store.memberIn, value);
             }
             if (change.type === "modified") {
-              store.memberIn = updateArray(store.memberIn, change.doc.data());
+              store.memberIn = updateArray(store.memberIn, value);
             }
             if (change.type === "removed") {
-              store.memberIn = updateArray(
-                store.memberIn,
-                change.doc.data(),
-                true
-              );
+              store.memberIn = updateArray(store.memberIn, value, true);
             }
           } catch (error) {
             console.error(error);
           }
         });
-        console.log(store)
+ 
+        store.memberIn.forEach((group) => {
+       
+          store.memberClean.push(listenToConsultation(group.groupId));
+        });
+        localStorage.setItem('store',JSON.stringify(store))
       } catch (error) {
         console.error(error);
       }

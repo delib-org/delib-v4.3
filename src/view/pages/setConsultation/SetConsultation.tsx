@@ -1,5 +1,6 @@
 import m, { Vnode } from "mithril";
 import { setConsultation } from "../../../cont/firebase/consultations/setConsultations";
+import { Section } from "../../../model/consultationModel";
 import store from "../../../model/store";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
 
@@ -15,25 +16,38 @@ export enum GroupType {
 }
 
 export default function SetConsultation() {
-  
   async function handleNewConsultation(ev: any) {
     try {
       ev.preventDefault();
       const { elements } = ev.target;
-      let { title, description, groupType } = elements;
+      console.log(elements);
+      let { title, description, groupType, sections } = elements;
       title = title.value;
       description = description.value;
       groupType = groupType.value;
-      console.log(title, description, groupType);
+      const sectionsNames: string[] = [];
+      for (let i = 0; i < sections.length; i++) {
+        if (sections[i].checked) {
+          sectionsNames.push(sections[i].value);
+        }
+      }
+      console.log(sectionsNames);
+      //  console.log(sections.map((section:any)=>section.checked));
+      console.log(title, description, groupType, sections);
       if (store.user === null)
         throw new Error(
           "To submit a new consultation, the user must be logged-in"
         );
-      const {success, consultationId} = await setConsultation({ title, description, groupType });
-      if(success){
-        m.route.set(`/consultation/${consultationId}`)
+     
+      const { success, consultationId } = await setConsultation({
+        title,
+        description,
+        groupType,
+        sections:sectionsNames
+      });
+      if (success) {
+        m.route.set(`/consultation/${consultationId}`);
       }
-
     } catch (error) {
       console.error(error);
     }
@@ -78,6 +92,27 @@ export default function SetConsultation() {
                     סודית - יש צורך לקבל הזמנה
                   </option>
                 </select>
+                <h3>אפשרויות ניהול התייעצות</h3>
+                <div className="checkboxBox">
+                  <div className="checkboxBox__item">
+                    <input
+                      type="checkbox"
+                      name="sections"
+                      id="info"
+                      value={Section.INFO}
+                    />
+                    <label htmlFor="info">משתתפים יכולים להוסיף מידע</label>
+                  </div>
+                  <div className="checkboxBox__item">
+                    <input
+                      type="checkbox"
+                      name="sections"
+                      id="chat"
+                      value={Section.CHAT}
+                    />
+                    <label htmlFor="chat">משתתפים יכולים לשוחח</label>
+                  </div>
+                </div>
                 <button type="submit">יצירת התייעצות</button>
               </form>
             </div>

@@ -18,21 +18,27 @@ export enum ErrorType{
   WARINIG = 'warning'
 }
 
-interface StoreProps{
+export interface StoreProps{
     counter:number
     user:UserProps | null;
     error:{message:string, type:ErrorType} | null;
-    consultations:{groups:Consultation[],last_update:FirebaseTime|Date};
+    consultations:{groups:Consultation[],last_update:FirebaseTime|Date,sections:any};
     memberIn:Membership[];
+    memberClean:Function[];
 }
 const store:StoreProps = {
   counter: 0,
   user: null,
   error:null,
-  consultations:{groups:[],last_update:new Date(0)},
-  memberIn:[]
+  consultations:{groups:[],last_update:new Date(0),sections:{}},
+  memberIn:[],
+  memberClean:[]
 };
 
 export default store;
+
+export function saveStoreToLocal(){
+  localStorage.setItem('store',JSON.stringify(store))
+}
 
 

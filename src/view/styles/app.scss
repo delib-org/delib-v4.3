@@ -1,3 +1,5 @@
+$white:white;
+
 :root {
   --mainBackground: #32527b;
   --subBackground: #ee7171;
@@ -52,6 +54,7 @@
 @import 'footer';
 @import 'buttons';
 @import 'forms';
+@import 'topNav';
 
 html,
 body {

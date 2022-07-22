@@ -12,6 +12,15 @@ export const ConsultationSchema = Joi.object({
   title:Joi.string().required(),
   members:Joi.array()
 });
+export enum Section{
+  INTRO = 'intro',
+  INFO = 'info',
+  CHAT = 'chat'
+}
+
+export const SectionsSchema = Joi.object({
+  sections:Joi.array().items(Joi.string().valid(Section.CHAT,Section.INFO))
+})
 
 export interface Consultation{
     creator:Object;
@@ -21,4 +30,6 @@ export interface Consultation{
     title:string;
     id:string;
 }
+
+
 

@@ -1,5 +1,5 @@
 import m from "mithril";
-import store, { ErrorType } from "../../../model/store";
+import store, { ErrorType, saveStoreToLocal } from "../../../model/store";
 import {
   collection,
   where,
@@ -11,7 +11,7 @@ import {
 import { DB } from "../config";
 
 //models
-import { ConsultationSchema } from "../../../model/consultationModel";
+import { ConsultationSchema, SectionsSchema } from "../../../model/consultationModel";
 
 //controls
 import { updateArray } from "../../general/general";
@@ -59,7 +59,7 @@ export function listenToConsultations() {
   }
 }
 
-function responseToError(error: any) {
+export function responseToError(error: any) {
   console.error(error);
   store.error = { message: error.message, type: ErrorType.ERROR };
   m.redraw();
@@ -90,27 +90,54 @@ function updateConsultation(consultationDB: any, toDelete?: boolean): void {
 
 export function listenToConsultation(consultationId: string) {
   try {
-    console.log("listenToConsultation", consultationId);
+   
     const consultationRef = doc(DB, "consultations", consultationId);
     return onSnapshot(consultationRef, (consultationDB) => {
+   
       const { value, error } = ConsultationSchema.validate(
         consultationDB.data()
       );
       if (error) throw error;
-
+      
+   
       const consultationObj = value;
-      consultationObj.id = consultationDB.id;
-      console.log(value);
+      consultationObj.id = consultationId;
+    
       store.consultations.groups = updateArray(
         store.consultations.groups,
         consultationObj
       );
+     saveStoreToLocal();
       m.redraw();
-      console.log(store);
+    
     });
   } catch (error) {
     console.error(error);
     responseToError(error);
     return () => {};
+  }
+}
+
+export function listenToSections(consultationId:string){
+  try {
+    const sectionsRef = doc(DB, 'consultations',consultationId, 'meta','sections');
+    return onSnapshot(sectionsRef,sectionsDB=>{
+      try {
+        const {value, error} = SectionsSchema.validate(sectionsDB.data());
+        if(error) throw error;
+        console.log(value)
+       
+        store.consultations.sections[consultationId] = value;
+        console.log(store)
+      } catch (error) {
+        console.error(error)
+        responseToError(error);
+      }
+    
+
+    })
+  } catch (error) {
+    responseToError(error);
+    return ()=>{}
   }
 }

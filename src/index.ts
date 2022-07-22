@@ -20,6 +20,7 @@ if (mountNode) {
     "/home": Home,
     "/sec":Second,
     "/set-consultation/:consultationId":SetConsultation,
-    "/consultation/:consultationId":Consultation
+    "/consultation/:consultationId/":Consultation,
+    "/consultation/:consultationId/:section":Consultation
 })
 }

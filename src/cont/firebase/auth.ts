@@ -27,15 +27,13 @@ export function AnonymousLogin() {
     });
 }
 
-let unsubMembership:Function=()=>{};
+let unsubMembership: Function = () => {};
 export function onAuth() {
-
   onAuthStateChanged(auth, (user) => {
- 
     try {
       if (user) {
         // getSubscriptions();
-      
+
         store.user = {
           displayName: user.displayName,
           uid: user.uid,
@@ -45,15 +43,31 @@ export function onAuth() {
         };
         console.info("User", user.uid, "is signed in.");
         unsubMembership = listenToMemberships(user.uid);
+
+        //get store from local storage
+        let storeLocal: any = localStorage.getItem("store");
+        if (storeLocal) {
+          storeLocal = JSON.parse(storeLocal);
+          if (storeLocal.user) {
+            const userId = storeLocal.user.uid;
+            if (userId === user.uid) {
+              store.memberIn = storeLocal.memberIn;
+              store.consultations = storeLocal.consultations;
+            }
+          }
+        }
         redirect();
       } else {
         console.info("User is signed out.");
         store.user = null;
-        redirect('/login');
-        
+        redirect("/login");
+        localStorage.removeItem("store");
         clenaMembership();
-        
+
         unsubMembership();
+        store.memberClean.forEach((groupClean) => {
+          groupClean();
+        });
       }
     } catch (err) {
       console.error(err);
@@ -74,10 +88,10 @@ export function googleLogin() {
       //   store.user = result.user;
       console.info(`user is logged in with google`);
       //   let lastPage = sessionStorage.getItem("lastPage") || "/groups";
-   
+
       // ...
-    
-      redirect('/home');
+
+      redirect("/home");
     })
     .catch((error) => {
       // Handle Errors here.
@@ -93,10 +107,7 @@ export function googleLogin() {
     });
 }
 
-export async function isLogged(){
+export async function isLogged() {
   try {
-    
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }

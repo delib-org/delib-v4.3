@@ -7,6 +7,22 @@ form {
   textarea{
     min-height: 8rem;
   }
+  .checkboxBox{
+    display: flex;
+    flex-direction: column;
+    &__item{
+      display: flex;
+      margin: 5px 0px;
+      align-items: center;
+      input{
+        margin-left: 20px;
+      }
+      label{
+        margin: 0px;
+        font-size: 1.2rem;
+      }
+    }
+  }
 }
 input,
 textarea,

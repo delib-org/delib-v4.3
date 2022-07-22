@@ -20,25 +20,7 @@ export default function Home() {
   }
   let unsub = () => {};
   return {
-    oninit: () => {
-      if (store.user) {
-        unsub = listenToConsultations();
-      } else {
-        checkInterval = setInterval(() => {
-          console.log("checking");
-          if (store.user) {
-            unsub = listenToConsultations();
-            clearInterval(checkInterval);
-          }
-        }, 200);
-      }
-    },
-    onremove: () => {
-      unsub();
-      if (checkInterval) {
-        clearInterval(checkInterval);
-      }
-    },
+    
     view: () => (
       <div className="page">
         <main class="page__main">
