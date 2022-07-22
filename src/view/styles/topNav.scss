@@ -1,10 +1,10 @@
 .navTop {
   position: relative;
-  background-color: #a20303;
+  background-color: var(--white);
   width: 100%;
   height: fit-content;
   display: flex;
-  z-index: -1;
+  z-index:2;
 
   &__btn {
     position: relative;
@@ -19,20 +19,20 @@
     user-select: none;
     cursor: pointer;
     padding: 10px 2px;
-    
+
     &--selected {
-        color: var(--black);
-        /* background-color: #e6e6e6; */
-        border-bottom: 3px solid var(--primary);
-        box-sizing: border-box;
-      }
+    //   color: var(--black);
+      /* background-color: #e6e6e6; */
+    //   border-bottom: 3px solid var(--primary);
+      box-sizing: border-box;
+    }
   }
 
-  &__btn .counter {
+  & .counter {
     position: absolute;
     top: 0px;
     left: 50%;
-    background: var(--primary);
+    // background: var(--primary);
     color: white;
     border-radius: 10px;
     width: 20px;
@@ -42,7 +42,5 @@
     flex-direction: column;
     font-size: 0.75rem;
     transform: translate(-46px, 0px);
-
-   
   }
 }
