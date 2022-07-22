@@ -76,6 +76,8 @@ export function googleLogin() {
       //   let lastPage = sessionStorage.getItem("lastPage") || "/groups";
    
       // ...
+    
+      redirect('/home');
     })
     .catch((error) => {
       // Handle Errors here.
@@ -89,4 +91,12 @@ export function googleLogin() {
       console.error(errorCode, errorMessage, email, credential);
       // ...
     });
+}
+
+export async function isLogged(){
+  try {
+    
+  } catch (error) {
+    
+  }
 }

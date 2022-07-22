@@ -6,7 +6,7 @@ import {
   query,
   onSnapshot,
   orderBy,
-  doc
+  doc,
 } from "firebase/firestore";
 import { DB } from "../config";
 
@@ -18,20 +18,23 @@ import { updateArray } from "../../general/general";
 
 export function listenToConsultations() {
   try {
+    if (!store.user)
+      throw new Error(
+        "User is not logged in, therfore I cant conduct this query"
+      );
+
     const consultationsRef = collection(DB, "consultations");
-   
     const q = query(
       consultationsRef,
-      where("groupType", "==", "public"),
+      where("members", "array-contains", store.user.uid),
       where("time.updated", ">", store.consultations.last_update),
-      orderBy('time.updated','desc')
+      orderBy("time.updated", "desc")
     );
 
     return onSnapshot(q, (consultationsDB) => {
       try {
         consultationsDB.docChanges().forEach((change) => {
           try {
-        
             if (change.type === "added") {
               updateConsultation(change.doc);
             }
@@ -46,12 +49,12 @@ export function listenToConsultations() {
           }
         });
         m.redraw();
-      
       } catch (error) {
         responseToError(error);
       }
     });
   } catch (error: any) {
+    responseToError(error);
     return () => {};
   }
 }
@@ -69,40 +72,45 @@ function updateConsultation(consultationDB: any, toDelete?: boolean): void {
 
     const consultationObj = value;
     consultationObj.id = consultationDB.id;
+    consultationObj.members = null;
 
     store.consultations.groups = updateArray(
       store.consultations.groups,
       consultationObj,
       toDelete
     );
-  
+
     if (store.consultations.last_update < consultationObj.time.updated) {
       store.consultations.last_update = consultationObj.time.updated;
     }
-
   } catch (error) {
     console.error(error);
   }
 }
 
-export function listenToConsultation(consultationId:string){
+export function listenToConsultation(consultationId: string) {
   try {
-    console.log('listenToConsultation',consultationId)
-    const consultationRef = doc(DB,'consultations',consultationId);
-    return onSnapshot(consultationRef,consultationDB=>{
-      const { value, error } = ConsultationSchema.validate(consultationDB.data());
+    console.log("listenToConsultation", consultationId);
+    const consultationRef = doc(DB, "consultations", consultationId);
+    return onSnapshot(consultationRef, (consultationDB) => {
+      const { value, error } = ConsultationSchema.validate(
+        consultationDB.data()
+      );
       if (error) throw error;
 
       const consultationObj = value;
       consultationObj.id = consultationDB.id;
-      console.log(value)
-      store.consultations.groups = updateArray(store.consultations.groups, consultationObj);
-      m.redraw()
-console.log(store)
-    })
+      console.log(value);
+      store.consultations.groups = updateArray(
+        store.consultations.groups,
+        consultationObj
+      );
+      m.redraw();
+      console.log(store);
+    });
   } catch (error) {
     console.error(error);
     responseToError(error);
-    return ()=>{}
+    return () => {};
   }
 }

@@ -9,7 +9,8 @@ export const ConsultationSchema = Joi.object({
   description:Joi.string(),
   groupType:Joi.string().allow('public','secret','close'),
   time:Joi.object({created:FirebaseTimeSchema, updated:FirebaseTimeSchema}),
-  title:Joi.string().required()
+  title:Joi.string().required(),
+  members:Joi.array()
 });
 
 export interface Consultation{
