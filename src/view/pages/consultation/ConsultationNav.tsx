@@ -9,15 +9,17 @@ interface Attrs {
 }
 
 export default function ConsultationNav(vnodeInit: Vnode<Attrs, State>) {
+    const consultationId = m.route.param('consultationId');
   return {
     view: (vnode: Vnode<Attrs, State>) => {
+     
         const {sections} = store.consultations;
-        console.log(sections)
-        const consultationId = m.route.param('consultationId');
+        const consultationSections = sections.find(section=>section.id === consultationId)
+       
       return(
       <div class="navTop">
         <ConsultationNavItem section={Section.INTRO} />
-        {consultationId in sections?sections[consultationId].sections.map((section:any)=> <ConsultationNavItem section={section} />):null}
+        {consultationSections?consultationSections.sections.map((section:any)=> <ConsultationNavItem section={section} />):null}
       </div>
       );
     },

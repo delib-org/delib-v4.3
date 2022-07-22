@@ -11,7 +11,7 @@ import {
 import { DB } from "../config";
 import { updateArray } from "../../general/general";
 import { membershipSchema } from "../../../model/membershipModel";
-import { listenToConsultation } from "./getConsultations";
+import { listenToConsultation } from "./consultationsDBGet";
 
 export default function listenToMemberships(userId: string): Function {
   try {
@@ -33,6 +33,7 @@ export default function listenToMemberships(userId: string): Function {
           
             if (change.type === "added") {
               store.memberIn = updateArray(store.memberIn, value);
+              listenToConsultation(value.id);
             }
             if (change.type === "modified") {
               store.memberIn = updateArray(store.memberIn, value);
@@ -45,10 +46,7 @@ export default function listenToMemberships(userId: string): Function {
           }
         });
  
-        store.memberIn.forEach((group) => {
        
-          store.memberClean.push(listenToConsultation(group.groupId));
-        });
         localStorage.setItem('store',JSON.stringify(store))
       } catch (error) {
         console.error(error);

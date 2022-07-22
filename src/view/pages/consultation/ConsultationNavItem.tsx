@@ -1,6 +1,11 @@
 import m, { Vnode } from "mithril";
+import {
+  getSectionSelected,
+  selectSection,
+} from "../../../cont/reducers/consultationsReducer";
 import { Section } from "../../../model/consultationModel";
-import store from '../../../model/store';
+import { transWord } from "../../../model/lang";
+
 
 interface State {}
 interface Attrs {
@@ -8,12 +13,19 @@ interface Attrs {
 }
 
 export default function ConsultationNavItem(vnodeInit: Vnode<Attrs, State>) {
-  return {
-    view: (vnode: Vnode<Attrs, State>) => (
-      <div class="navTop__btn">
-       {vnode.attrs.section}
+  const consultationId = m.route.param("consultationId");
+  function handleSelection() {
+    selectSection(consultationId, vnodeInit.attrs.section);
+  }
 
-      </div>
-    ),
+  return {
+    view: (vnode: Vnode<Attrs, State>) => {
+        const selectedSection = getSectionSelected(consultationId);
+      return (
+        <div onclick={handleSelection} className={selectedSection === vnode.attrs.section?'navTop__btn navTop__btn--selected':'navTop__btn'}>
+          {transWord(vnode.attrs.section)}
+        </div>
+      );
+    },
   };
 }

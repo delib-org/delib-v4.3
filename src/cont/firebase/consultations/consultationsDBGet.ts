@@ -11,10 +11,14 @@ import {
 import { DB } from "../config";
 
 //models
-import { ConsultationSchema, SectionsSchema } from "../../../model/consultationModel";
+import {
+  ConsultationSchema,
+  SectionsSchema,
+} from "../../../model/consultationModel";
 
 //controls
 import { updateArray } from "../../general/general";
+import { saveStore } from "../../reducers/storeReducer";
 
 export function listenToConsultations() {
   try {
@@ -90,26 +94,27 @@ function updateConsultation(consultationDB: any, toDelete?: boolean): void {
 
 export function listenToConsultation(consultationId: string) {
   try {
-   
+    console.log("listenToConsultation", consultationId);
     const consultationRef = doc(DB, "consultations", consultationId);
     return onSnapshot(consultationRef, (consultationDB) => {
-   
-      const { value, error } = ConsultationSchema.validate(
-        consultationDB.data()
-      );
-      if (error) throw error;
-      
-   
-      const consultationObj = value;
-      consultationObj.id = consultationId;
-    
-      store.consultations.groups = updateArray(
-        store.consultations.groups,
-        consultationObj
-      );
-     saveStoreToLocal();
-      m.redraw();
-    
+      try {
+        if(!consultationDB.exists()) throw new Error(`Consultation ${consultationId} does not exists on DB`)
+        const { value, error } = ConsultationSchema.validate(
+          consultationDB.data()
+        );
+        if (error) throw error;
+
+        const consultationObj = value;
+        consultationObj.id = consultationId;
+  
+        store.consultations.groups = updateArray(
+          store.consultations.groups,
+          consultationObj
+        );
+        console.log(JSON.stringify(store.consultations.groups.length))
+        saveStore('listenToConsultation')
+        m.redraw();
+      } catch (error) {}
     });
   } catch (error) {
     console.error(error);
@@ -118,26 +123,36 @@ export function listenToConsultation(consultationId: string) {
   }
 }
 
-export function listenToSections(consultationId:string){
+export function listenToSections(consultationId: string) {
   try {
-    const sectionsRef = doc(DB, 'consultations',consultationId, 'meta','sections');
-    return onSnapshot(sectionsRef,sectionsDB=>{
+    const sectionsRef = doc(
+      DB,
+      "consultations",
+      consultationId,
+      "meta",
+      "sections"
+    );
+    return onSnapshot(sectionsRef, (sectionsDB) => {
       try {
-        const {value, error} = SectionsSchema.validate(sectionsDB.data());
-        if(error) throw error;
-        console.log(value)
-       
-        store.consultations.sections[consultationId] = value;
-        console.log(store)
+        console.log(consultationId);
+        console.log(sectionsDB.data());
+        if (sectionsDB.exists()) {
+          const { value, error } = SectionsSchema.validate(sectionsDB.data());
+          if (error) throw error;
+          console.log(value);
+          value.id = consultationId;
+
+          store.consultations.sections = updateArray(
+            store.consultations.sections,
+            value
+          );
+        }
       } catch (error) {
-        console.error(error)
         responseToError(error);
       }
-    
-
-    })
+    });
   } catch (error) {
     responseToError(error);
-    return ()=>{}
+    return () => {};
   }
 }

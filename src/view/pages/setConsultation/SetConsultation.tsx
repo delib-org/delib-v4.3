@@ -1,5 +1,5 @@
 import m, { Vnode } from "mithril";
-import { setConsultation } from "../../../cont/firebase/consultations/setConsultations";
+import { setConsultation } from "../../../cont/firebase/consultations/consultationsDBset";
 import { Section } from "../../../model/consultationModel";
 import store from "../../../model/store";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";

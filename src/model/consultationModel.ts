@@ -12,10 +12,17 @@ export const ConsultationSchema = Joi.object({
   title:Joi.string().required(),
   members:Joi.array()
 });
+
 export enum Section{
   INTRO = 'intro',
   INFO = 'info',
   CHAT = 'chat'
+}
+
+export interface SectionProps{
+  sections:Section[],
+  id:string,
+  selectedSection?:Section
 }
 
 export const SectionsSchema = Joi.object({

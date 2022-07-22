@@ -1,6 +1,7 @@
 import m from "mithril";
-import { listenToSections } from "../../../cont/firebase/consultations/getConsultations";
+import { listenToSections } from "../../../cont/firebase/consultations/consultationsDBGet";
 import { getConsultationStore } from "../../../cont/store/consultationStore";
+import store from "../../../model/store";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
 import ConsultationNav from "./ConsultationNav";
 
@@ -21,8 +22,11 @@ export default function Consultation() {
     view: () => {
       const consultationId = m.route.param("consultationId");
       const section = m.route.param("section");
-      console.log(section);
+    
       const consultation = getConsultationStore(consultationId);
+     
+      console.log( store)
+      console.log(consultation)
       return (
         <div className="page">
           <h1>

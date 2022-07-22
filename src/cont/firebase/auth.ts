@@ -9,8 +9,9 @@ import {
 import { firebaseApp } from "./config";
 import store from "../../model/store";
 import { redirect } from "../general/authCont";
-import listenToMemberships from "./consultations/getMemberships";
+import listenToMemberships from "./consultations/membershipsDB";
 import { clenaMembership } from "../general/membershipCont";
+import { updateUserToDB } from "./consultations/userDB";
 
 const auth = getAuth(firebaseApp);
 
@@ -32,7 +33,6 @@ export function onAuth() {
   onAuthStateChanged(auth, (user) => {
     try {
       if (user) {
-        // getSubscriptions();
 
         store.user = {
           displayName: user.displayName,
@@ -41,6 +41,8 @@ export function onAuth() {
           photoURL: user.photoURL,
           isAnonymous: user.isAnonymous,
         };
+        updateUserToDB(store.user)
+
         console.info("User", user.uid, "is signed in.");
         unsubMembership = listenToMemberships(user.uid);
 

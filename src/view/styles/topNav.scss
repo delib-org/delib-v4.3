@@ -4,7 +4,7 @@
   width: 100%;
   height: fit-content;
   display: flex;
-  z-index:2;
+  z-index: 2;
 
   &__btn {
     position: relative;
@@ -21,9 +21,9 @@
     padding: 10px 2px;
 
     &--selected {
-    //   color: var(--black);
-      /* background-color: #e6e6e6; */
-    //   border-bottom: 3px solid var(--primary);
+      color: var(--black);
+      background-color: #e6e6e6;
+      border-bottom: 3px solid var(--primary);
       box-sizing: border-box;
     }
   }
@@ -32,7 +32,7 @@
     position: absolute;
     top: 0px;
     left: 50%;
-    // background: var(--primary);
+    background: var(--primary);
     color: white;
     border-radius: 10px;
     width: 20px;

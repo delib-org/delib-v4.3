@@ -1,5 +1,5 @@
 import m from "mithril";
-import { listenToConsultations } from "../../../cont/firebase/consultations/getConsultations";
+import { listenToConsultations } from "../../../cont/firebase/consultations/consultationsDBGet";
 import store from "../../../model/store";
 
 //components
@@ -36,7 +36,7 @@ export default function Home() {
           {store.consultations.groups
             .sort((a, b) => b.time.updated - a.time.updated)
             .map((consultation) => (
-              <ConsultationCard consultation={consultation} />
+              <ConsultationCard key={consultation.id} consultation={consultation} />
             ))}
         </main>
         {/* @ts-ignore */}

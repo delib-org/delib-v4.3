@@ -1,4 +1,4 @@
-import { Consultation } from "./consultationModel";
+import { Consultation, SectionProps } from "./consultationModel";
 import { FirebaseTime } from "./timeModel";
 import { Membership } from "./membershipModel";
 
@@ -18,21 +18,28 @@ export enum ErrorType{
   WARINIG = 'warning'
 }
 
+export enum Lang{
+  HE = 'he',
+  EN = 'en'
+}
+
 export interface StoreProps{
     counter:number
     user:UserProps | null;
     error:{message:string, type:ErrorType} | null;
-    consultations:{groups:Consultation[],last_update:FirebaseTime|Date,sections:any};
+    consultations:{groups:Consultation[],last_update:FirebaseTime|Date,sections:SectionProps[]};
     memberIn:Membership[];
     memberClean:Function[];
+    lang:Lang;
 }
 const store:StoreProps = {
   counter: 0,
   user: null,
   error:null,
-  consultations:{groups:[],last_update:new Date(0),sections:{}},
+  consultations:{groups:[],last_update:new Date(0),sections:[]},
   memberIn:[],
-  memberClean:[]
+  memberClean:[],
+  lang:Lang.HE
 };
 
 export default store;
