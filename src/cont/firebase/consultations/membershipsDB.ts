@@ -12,6 +12,7 @@ import { DB } from "../config";
 import { updateArray } from "../../general/general";
 import { membershipSchema } from "../../../model/membershipModel";
 import { listenToConsultation } from "./consultationsDBGet";
+import { listenToNew } from "./newsDB";
 
 export default function listenToMemberships(userId: string): Function {
   try {
@@ -20,20 +21,18 @@ export default function listenToMemberships(userId: string): Function {
 
     return onSnapshot(membershipsRef, (membershipsDB) => {
       try {
-        
         membershipsDB.docChanges().forEach((change) => {
           try {
-        
             const { value, error } = membershipSchema.validate(
               change.doc.data()
             );
             if (error) throw error;
-         value.id = change.doc.data().groupId;
-      
-          
+            value.id = change.doc.data().groupId;
+
             if (change.type === "added") {
               store.memberIn = updateArray(store.memberIn, value);
-              listenToConsultation(value.id);
+              // listenToConsultation(value.id);
+              listenToNew(value.id);
             }
             if (change.type === "modified") {
               store.memberIn = updateArray(store.memberIn, value);
@@ -45,9 +44,8 @@ export default function listenToMemberships(userId: string): Function {
             console.error(error);
           }
         });
- 
-       
-        localStorage.setItem('store',JSON.stringify(store))
+
+        localStorage.setItem("store", JSON.stringify(store));
       } catch (error) {
         console.error(error);
       }

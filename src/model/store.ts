@@ -1,6 +1,7 @@
 import { Consultation, SectionProps } from "./consultationModel";
 import { FirebaseTime } from "./timeModel";
 import { Membership } from "./membershipModel";
+import { News } from "./newsModel";
 
 export interface UserProps{
   displayName:string |null,
@@ -30,6 +31,7 @@ export interface StoreProps{
     consultations:{groups:Consultation[],last_update:FirebaseTime|Date,sections:SectionProps[]};
     memberIn:Membership[];
     memberClean:Function[];
+    news:News[],
     lang:Lang;
 }
 const store:StoreProps = {
@@ -38,6 +40,7 @@ const store:StoreProps = {
   error:null,
   consultations:{groups:[],last_update:new Date(0),sections:[]},
   memberIn:[],
+  news:[],
   memberClean:[],
   lang:Lang.HE
 };

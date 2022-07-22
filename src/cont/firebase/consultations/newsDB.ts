@@ -6,6 +6,9 @@ import {
   collection,
   addDoc,
   serverTimestamp,
+  query,
+  where,
+  onSnapshot,
 } from "firebase/firestore";
 import store from "../../../model/store";
 
@@ -15,8 +18,14 @@ import {
   Consultation,
   ConsultationSchema,
 } from "../../../model/consultationModel";
-import { EntityType, EntityTypeSchema } from "../../../model/newsModel";
+import {
+  EntityType,
+  EntityTypeSchema,
+  NewsSchema,
+} from "../../../model/newsModel";
 import Joi from "joi";
+import { updateArray } from "../../general/general";
+import { saveStore } from "../../reducers/storeReducer";
 
 export async function addNews(
   consultationId: string,
@@ -35,10 +44,41 @@ export async function addNews(
       groupId: consultationId,
       creator: store.user,
       entityType,
-      entity
+      entity,
     });
   } catch (error) {
     responseToError(error);
+  }
+}
+
+export async function listenToNew(groupId: string): Promise<Function> {
+  try {
+    if (!groupId) throw new Error("no groupId");
+
+    const newRef = collection(DB, "news");
+    const q = query(newRef, where("groupId", "==", groupId));
+    return onSnapshot(q, (newsDB) => {
+      newsDB.docChanges().forEach((change) => {
+        try {
+          console.log(change.doc.data());
+          const { value, error } = NewsSchema.validate(change.doc.data());
+          if (error) throw error;
+          value.id = change.doc.data().groupId;
+          if (change.type === "added") {
+            store.news = updateArray(store.news, value);
+            m.redraw();
+            saveStore('listenToNew')
+          }
+        } catch (error) {
+          responseToError(error);
+        }
+      });
+      console.log(store)
+    });
+    
+  } catch (error) {
+    responseToError(error);
+    return () => {};
   }
 }
 
@@ -54,7 +94,7 @@ function validateEntity(entity: any, entityType: EntityType): { error?: any } {
       case EntityType.MESSAGE:
         //    const {error}= ConsultationSchema.validate(entity);
         //    if(error) throw error;
-        return {error:"message schema was not yet defined"}
+        return { error: "message schema was not yet defined" };
         return {};
       default:
         return { error: "Entity type was not found" };
