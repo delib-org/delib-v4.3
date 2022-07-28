@@ -51,7 +51,9 @@ export async function addNews(
   }
 }
 
-export async function listenToNewsFromGroup(groupId: string): Promise<Function> {
+export async function listenToNewsFromGroup(
+  groupId: string
+): Promise<Function> {
   try {
     if (!groupId) throw new Error("no groupId");
 
@@ -60,22 +62,30 @@ export async function listenToNewsFromGroup(groupId: string): Promise<Function> 
     return onSnapshot(q, (newsDB) => {
       newsDB.docChanges().forEach((change) => {
         try {
-          console.log(change.doc.data());
+        
           const { value, error } = NewsSchema.validate(change.doc.data());
           if (error) throw error;
-          value.id = change.doc.data().groupId;
-          if (change.type === "added") {
-            store.news = updateArray(store.news, value);
-            m.redraw();
-            saveStore('listenToNewsFromGroup')
+          console.log(value);
+          if (value.entityType === EntityType.CONSULTATION) {
+            value.entity.id = change.doc.data().groupId;
+            if (change.type === "added") {
+              store.news = updateArray(store.news, value);
+             
+
+              store.consultations.groups = updateArray(
+                store.consultations.groups,
+                value.entity
+              );
+              m.redraw();
+              saveStore("listenToNewsFromGroup");
+            }
           }
         } catch (error) {
           responseToError(error);
         }
       });
-      console.log(store)
+      console.log(JSON.stringify(store.consultations.groups));
     });
-    
   } catch (error) {
     responseToError(error);
     return () => {};
