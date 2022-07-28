@@ -1,8 +1,13 @@
 import m from "mithril";
-import { listenToConsultation, listenToSections } from "../../../cont/firebase/consultations/consultationsDBGet";
+import {
+  listenToConsultation,
+  listenToSections,
+} from "../../../cont/firebase/consultations/consultationsDBGet";
 import { getConsultationStore } from "../../../cont/store/consultationStore";
 import store from "../../../cont/store/store";
+import { Consultation, Section } from "../../../model/consultationModel";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
+import Chat from "./Chat/Chat";
 import ConsultationNav from "./ConsultationNav";
 let unsubSections = () => {},
   unsubConsultation = () => {};
@@ -12,9 +17,7 @@ export default function Consultation() {
 
   return {
     oninit: () => {
-     
-
-      unsubConsultation = listenToConsultation(consultationId)
+      unsubConsultation = listenToConsultation(consultationId);
 
       unsubSections = listenToSections(consultationId);
     },
@@ -28,19 +31,59 @@ export default function Consultation() {
 
       const consultation = getConsultationStore(consultationId);
 
-      console.log(store);
-      console.log(consultation);
+   
       return (
         <div className="page">
           <h1>
             {/* @ts-ignore */}
             <m.route.Link href="/home">{consultation?.title}</m.route.Link>
           </h1>
+          {/* @ts-ignore */}
           <ConsultationNav section={section} />
+          {consultation
+            ? ConsultationSwitch(
+                useConsultationSection(consultationId),
+                consultation
+              )
+            : null}
           {/* @ts-ignore */}
           <SystemMessage />
         </div>
       );
     },
   };
+}
+
+function ConsultationSwitch(
+  consultationSection: string,
+  consultation: Consultation
+) {
+  try {
+    switch (consultationSection) {
+      case Section.CHAT:
+        return <Chat consultation={consultation} />;
+      default:
+        return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+function useConsultationSection(consultationId: string): Section {
+  try {
+    const consultationSection = store.consultations.sections.find(
+      (sections) => sections.id === consultationId
+    );
+    if (!consultationSection)
+      throw new Error(`Couldnt find section in consultation ${consultationId}`);
+    if (!consultationSection.selectedSection)
+      throw new Error("No selected section");
+
+    return consultationSection.selectedSection;
+  } catch (error) {
+ 
+    return Section.INTRO;
+  }
 }

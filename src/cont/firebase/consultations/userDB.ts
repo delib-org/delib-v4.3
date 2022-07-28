@@ -24,7 +24,7 @@ export async function updateUserToDB(user: User) {
       { displayName, uid, email, photoURL, isAnonymous , lastEnterd:serverTimestamp()},
       { merge: true }
     );
-    console.log("user updated");
+ 
   } catch (error) {
     responseToError(error);
   }

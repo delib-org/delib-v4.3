@@ -94,7 +94,7 @@ function updateConsultation(consultationDB: any, toDelete?: boolean): void {
 
 export function listenToConsultation(consultationId: string) {
   try {
-    console.log("listenToConsultation", consultationId);
+ 
     const consultationRef = doc(DB, "consultations", consultationId);
     return onSnapshot(consultationRef, (consultationDB) => {
       try {
@@ -111,7 +111,7 @@ export function listenToConsultation(consultationId: string) {
           store.consultations.groups,
           consultationObj
         );
-        console.log(JSON.stringify(store.consultations.groups.length))
+      
         saveStore('listenToConsultation')
         m.redraw();
       } catch (error) {}
@@ -134,12 +134,11 @@ export function listenToSections(consultationId: string) {
     );
     return onSnapshot(sectionsRef, (sectionsDB) => {
       try {
-        console.log(consultationId);
-        console.log(sectionsDB.data());
+       
         if (sectionsDB.exists()) {
           const { value, error } = SectionsSchema.validate(sectionsDB.data());
           if (error) throw error;
-          console.log(value);
+       
           value.id = consultationId;
 
           store.consultations.sections = updateArray(

@@ -21,6 +21,7 @@ import {
 import {
   EntityType,
   EntityTypeSchema,
+  MessageSchema,
   NewsSchema,
 } from "../../../model/newsModel";
 import Joi from "joi";
@@ -30,12 +31,17 @@ import { saveStore } from "../../store/reducers/storeReducer";
 export async function addNews(
   consultationId: string,
   message: string,
-  entity: any,
+  group: Consultation,
   entityType: EntityType
 ) {
   try {
-    const { error } = validateEntity(entity, entityType);
-    if (error) throw error;
+    if (entityType === EntityType.CONSULTATION) {
+      const { error } = validateEntity(group, entityType);
+      if (error) throw error;
+    } else if(entityType === EntityType.MESSAGE){
+      const { error } = validateEntity(message, entityType);
+      if (error) throw error;
+    }
 
     const newsRef = collection(DB, "news");
     await addDoc(newsRef, {
@@ -44,7 +50,7 @@ export async function addNews(
       groupId: consultationId,
       creator: store.user,
       entityType,
-      entity,
+      group,
     });
   } catch (error) {
     responseToError(error);
@@ -56,35 +62,36 @@ export async function listenToNewsFromGroup(
 ): Promise<Function> {
   try {
     if (!groupId) throw new Error("no groupId");
-
+    console.log("listenToNewsFromGroup", groupId);
     const newRef = collection(DB, "news");
     const q = query(newRef, where("groupId", "==", groupId));
     return onSnapshot(q, (newsDB) => {
       newsDB.docChanges().forEach((change) => {
         try {
-        
-          const { value, error } = NewsSchema.validate(change.doc.data());
-          if (error) throw error;
-          console.log(value);
-          if (value.entityType === EntityType.CONSULTATION) {
-            value.entity.id = change.doc.data().groupId;
-            if (change.type === "added") {
-              store.news = updateArray(store.news, value);
-             
+          if (change.doc.data().update) {
+            const { value, error } = NewsSchema.validate(change.doc.data());
+            if (error) throw error;
 
-              store.consultations.groups = updateArray(
-                store.consultations.groups,
-                value.entity
-              );
-              m.redraw();
-              saveStore("listenToNewsFromGroup");
+            if (value.entityType === EntityType.CONSULTATION) {
+              value.id = change.doc.id;
+              value.group.id = change.doc.data().groupId;
+              if (change.type === "added") {
+                store.news = updateArray(store.news, value);
+
+                store.consultations.groups = updateArray(
+                  store.consultations.groups,
+                  value.group
+                );
+                m.redraw();
+                saveStore("listenToNewsFromGroup");
+              }
             }
           }
         } catch (error) {
           responseToError(error);
         }
       });
-      console.log(JSON.stringify(store.consultations.groups));
+      console.log(store.news);
     });
   } catch (error) {
     responseToError(error);
@@ -98,13 +105,12 @@ function validateEntity(entity: any, entityType: EntityType): { error?: any } {
     if (error) throw error;
     switch (entityType) {
       case EntityType.CONSULTATION:
-        const { error } = ConsultationSchema.validate(entity);
-        if (error) throw error;
+        const cons = ConsultationSchema.validate(entity);
+        if (cons.error) throw cons.error;
         return {};
       case EntityType.MESSAGE:
-        //    const {error}= ConsultationSchema.validate(entity);
-        //    if(error) throw error;
-        return { error: "message schema was not yet defined" };
+        const mess = MessageSchema.validate(entity);
+        if (mess.error) throw mess.error;
         return {};
       default:
         return { error: "Entity type was not found" };

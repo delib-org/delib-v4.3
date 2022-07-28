@@ -6,7 +6,7 @@ import store from "../../../cont/store/store";
 import NavBottom from "../../comp/NavBottom/NavBottom";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
 import ConsultationCard from "./consultationCard/ConsultationCard";
-import ConsultationsHome from "./ConsultationsHome";
+import News from "./News";
 import HomeCreate from "./HomeCreate";
 
 const consultations = [];
@@ -33,7 +33,7 @@ export default function Home() {
           <h2>{store.counter}</h2>
           <button onclick={handleRoute}>Second</button>
           <button onclick={add}>ADD</button>
-         <ConsultationsHome />
+         <News />
         </main>
         {/* @ts-ignore */}
         <NavBottom />

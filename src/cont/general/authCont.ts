@@ -31,7 +31,7 @@ export function redirect(requestedPath?: string): void {
     } else {
       //in case the user try to enter a page
       const path = m.route.get();
-      console.log(path);
+    
       m.route.set(path);
     }
   } catch (error) {

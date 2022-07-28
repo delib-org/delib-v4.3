@@ -6,6 +6,7 @@ interface State {
 }
 interface Attrs {
   consultation: Consultation;
+  news:string
 }
 
 export default function ConsultationCard(vnodeInit:Vnode<Attrs, State>) {
@@ -15,7 +16,7 @@ export default function ConsultationCard(vnodeInit:Vnode<Attrs, State>) {
             const { consultation } = vnodeInit.attrs;
             m.route.set(`/consultation/${consultation.id}`)
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
 
@@ -23,9 +24,12 @@ export default function ConsultationCard(vnodeInit:Vnode<Attrs, State>) {
    
 
     view: (vnode: Vnode<Attrs, State>) => {
-      const { consultation } = vnode.attrs;
+      const { consultation, news } = vnode.attrs;
      
-      return <div className="card clickable" onclick={handleHref} >{consultation.title} </div>;
+      return <div className="card clickable" onclick={handleHref} >
+        <h3>{consultation.title}</h3>
+        <p class="news">{news}</p>
+        </div>;
     },
   };
 }

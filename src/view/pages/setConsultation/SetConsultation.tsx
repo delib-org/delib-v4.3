@@ -20,7 +20,7 @@ export default function SetConsultation() {
     try {
       ev.preventDefault();
       const { elements } = ev.target;
-      console.log(elements);
+   
       let { title, description, groupType, sections } = elements;
       title = title.value;
       description = description.value;
@@ -31,9 +31,8 @@ export default function SetConsultation() {
           sectionsNames.push(sections[i].value);
         }
       }
-      console.log(sectionsNames);
-      //  console.log(sections.map((section:any)=>section.checked));
-      console.log(title, description, groupType, sections);
+   
+   
       if (store.user === null)
         throw new Error(
           "To submit a new consultation, the user must be logged-in"

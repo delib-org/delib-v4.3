@@ -50,6 +50,7 @@ export async function setConsultation(
         updated: serverTimestamp(),
       },
     });
+    
     const consultationObj2: Consultation = {
       title,
       description,

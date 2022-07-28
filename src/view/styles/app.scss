@@ -55,6 +55,7 @@ $white:white;
 @import 'buttons';
 @import 'forms';
 @import 'topNav';
+@import 'chat';
 
 html,
 body {
@@ -555,4 +556,8 @@ input[type="checkbox"] {
   .carousel > main {
     width: 300vw;
   }
+}
+
+.section{
+  flex:auto
 }

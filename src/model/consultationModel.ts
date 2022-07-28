@@ -10,7 +10,8 @@ export const ConsultationSchema = Joi.object({
   groupType:Joi.string().allow('public','secret','close'),
   time:Joi.object({created:FirebaseTimeSchema, updated:FirebaseTimeSchema}),
   title:Joi.string().required(),
-  members:Joi.array()
+  members:Joi.array(),
+  id:Joi.string()
 });
 
 export enum Section{
