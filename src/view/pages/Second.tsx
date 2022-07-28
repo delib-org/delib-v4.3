@@ -1,5 +1,5 @@
 import m from "mithril";
-import store from "../../model/store";
+import store from "../../cont/store/store";
 
 export default function Second() {
     function handleRoute(){

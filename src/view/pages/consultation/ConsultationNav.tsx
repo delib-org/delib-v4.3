@@ -1,6 +1,6 @@
 import m, { Vnode } from "mithril";
 import { Section } from "../../../model/consultationModel";
-import store from "../../../model/store";
+import store from "../../../cont/store/store";
 import ConsultationNavItem from "./ConsultationNavItem";
 
 interface State {}

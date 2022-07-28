@@ -1,5 +1,5 @@
 import { responseToError } from "../cont/firebase/consultations/consultationsDBGet";
-import store from "./store";
+import store from "../cont/store/store";
 
 export const dic:any = {
   //sections

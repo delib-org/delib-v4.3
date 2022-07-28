@@ -7,7 +7,7 @@ import {
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import store, { ErrorType } from "../../../model/store";
+import store, { ErrorType } from "../../store/store";
 import { GroupType } from "../../../view/pages/setConsultation/SetConsultation";
 import {
   Consultation,
@@ -17,7 +17,7 @@ import {
 import { responseToError } from "./consultationsDBGet";
 import { Membership, Role } from "../../../model/membershipModel";
 import { updateArray } from "../../general/general";
-import { addNews } from "./newsDB";
+import { addNews } from "../news/newsDB";
 import { EntityType } from "../../../model/newsModel";
 
 interface SetConsultationProps {

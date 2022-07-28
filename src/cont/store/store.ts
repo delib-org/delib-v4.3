@@ -1,7 +1,7 @@
-import { Consultation, SectionProps } from "./consultationModel";
-import { FirebaseTime } from "./timeModel";
-import { Membership } from "./membershipModel";
-import { News } from "./newsModel";
+import { Consultation, SectionProps } from "../../model/consultationModel";
+import { FirebaseTime } from "../../model/timeModel";
+import { Membership } from "../../model/membershipModel";
+import { News } from "../../model/newsModel";
 
 export interface UserProps{
   displayName:string |null,

@@ -1,5 +1,5 @@
 import m from "mithril";
-import store, { ErrorType, saveStoreToLocal } from "../../../model/store";
+import store, { ErrorType, saveStoreToLocal } from "../../store/store";
 import {
   collection,
   where,
@@ -18,7 +18,7 @@ import {
 
 //controls
 import { updateArray } from "../../general/general";
-import { saveStore } from "../../reducers/storeReducer";
+import { saveStore } from "../../store/reducers/storeReducer";
 
 export function listenToConsultations() {
   try {

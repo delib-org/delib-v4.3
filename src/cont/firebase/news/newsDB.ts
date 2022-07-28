@@ -10,10 +10,10 @@ import {
   where,
   onSnapshot,
 } from "firebase/firestore";
-import store from "../../../model/store";
+import store from "../../store/store";
 
 //controls
-import { responseToError } from "./consultationsDBGet";
+import { responseToError } from "../consultations/consultationsDBGet";
 import {
   Consultation,
   ConsultationSchema,
@@ -25,7 +25,7 @@ import {
 } from "../../../model/newsModel";
 import Joi from "joi";
 import { updateArray } from "../../general/general";
-import { saveStore } from "../../reducers/storeReducer";
+import { saveStore } from "../../store/reducers/storeReducer";
 
 export async function addNews(
   consultationId: string,
@@ -51,7 +51,7 @@ export async function addNews(
   }
 }
 
-export async function listenToNew(groupId: string): Promise<Function> {
+export async function listenToNewsFromGroup(groupId: string): Promise<Function> {
   try {
     if (!groupId) throw new Error("no groupId");
 
@@ -67,7 +67,7 @@ export async function listenToNew(groupId: string): Promise<Function> {
           if (change.type === "added") {
             store.news = updateArray(store.news, value);
             m.redraw();
-            saveStore('listenToNew')
+            saveStore('listenToNewsFromGroup')
           }
         } catch (error) {
           responseToError(error);

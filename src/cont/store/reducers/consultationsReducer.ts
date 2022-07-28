@@ -1,6 +1,6 @@
-import { Section } from "../../model/consultationModel";
-import store from "../../model/store";
-import { responseToError } from "../firebase/consultations/consultationsDBGet";
+import { Section } from "../../../model/consultationModel";
+import store from "../store";
+import { responseToError } from "../../firebase/consultations/consultationsDBGet";
 import { saveStore } from "./storeReducer";
 
 export function selectSection(consultationId:string, section:Section){

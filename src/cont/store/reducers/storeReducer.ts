@@ -1,5 +1,5 @@
-import store from "../../model/store";
-import { responseToError } from "../firebase/consultations/consultationsDBGet";
+import store from "../store";
+import { responseToError } from "../../firebase/consultations/consultationsDBGet";
 
 export function saveStore(funchanged:string) {
   try {

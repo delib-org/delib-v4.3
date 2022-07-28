@@ -7,7 +7,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { firebaseApp } from "./config";
-import store from "../../model/store";
+import store from "../store/store";
 import { redirect } from "../general/authCont";
 import listenToMemberships from "./consultations/membershipsDB";
 import { clenaMembership } from "../general/membershipCont";

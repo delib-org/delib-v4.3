@@ -1,4 +1,4 @@
-import store from "../../model/store";
+import store from "../store/store";
 import { Membership } from "../../model/membershipModel";
 
 export function getMembership(groupId:string):Membership|undefined{

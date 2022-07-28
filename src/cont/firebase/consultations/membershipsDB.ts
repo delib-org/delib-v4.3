@@ -1,5 +1,5 @@
 import m from "mithril";
-import store, { ErrorType } from "../../../model/store";
+import store, { ErrorType } from "../../store/store";
 import {
   collection,
   where,
@@ -12,7 +12,7 @@ import { DB } from "../config";
 import { updateArray } from "../../general/general";
 import { membershipSchema } from "../../../model/membershipModel";
 import { listenToConsultation } from "./consultationsDBGet";
-import { listenToNew } from "./newsDB";
+import { listenToNewsFromGroup } from "../news/newsDB";
 
 export default function listenToMemberships(userId: string): Function {
   try {
@@ -32,7 +32,7 @@ export default function listenToMemberships(userId: string): Function {
             if (change.type === "added") {
               store.memberIn = updateArray(store.memberIn, value);
               // listenToConsultation(value.id);
-              listenToNew(value.id);
+              listenToNewsFromGroup(value.id);
             }
             if (change.type === "modified") {
               store.memberIn = updateArray(store.memberIn, value);

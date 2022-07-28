@@ -1,7 +1,7 @@
 import m from "mithril";
 import { listenToSections } from "../../../cont/firebase/consultations/consultationsDBGet";
 import { getConsultationStore } from "../../../cont/store/consultationStore";
-import store from "../../../model/store";
+import store from "../../../cont/store/store";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
 import ConsultationNav from "./ConsultationNav";
 

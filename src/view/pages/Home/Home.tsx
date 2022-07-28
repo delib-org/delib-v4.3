@@ -1,11 +1,12 @@
 import m from "mithril";
 import { listenToConsultations } from "../../../cont/firebase/consultations/consultationsDBGet";
-import store from "../../../model/store";
+import store from "../../../cont/store/store";
 
 //components
 import NavBottom from "../../comp/NavBottom/NavBottom";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
 import ConsultationCard from "./consultationCard/ConsultationCard";
+import ConsultationsHome from "./ConsultationsHome";
 import HomeCreate from "./HomeCreate";
 
 const consultations = [];
@@ -32,12 +33,7 @@ export default function Home() {
           <h2>{store.counter}</h2>
           <button onclick={handleRoute}>Second</button>
           <button onclick={add}>ADD</button>
-          {/* @ts-ignore */}
-          {store.consultations.groups
-            .sort((a, b) => b.time.updated - a.time.updated)
-            .map((consultation) => (
-              <ConsultationCard key={consultation.id} consultation={consultation} />
-            ))}
+         <ConsultationsHome />
         </main>
         {/* @ts-ignore */}
         <NavBottom />

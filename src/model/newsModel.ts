@@ -1,6 +1,6 @@
 import Joi from "joi";
-import { UserProps } from "./store";
-import { FirebaseTimeSchema } from "./timeModel";
+import { UserProps } from "../cont/store/store";
+import { FirebaseTime, FirebaseTimeSchema } from "./timeModel";
 import { UserSchema } from "./userModel";
 
 export enum EntityType{
@@ -9,12 +9,13 @@ export enum EntityType{
 }
 
 export interface News{
+    id?:string,
     creator:UserProps,
     entityType:EntityType,
     entity:Object,
     groupId:string,
     text:string,
-    update:Date
+    update:FirebaseTime
 }
 export const EntityTypeSchema = Joi.string().valid(EntityType.CONSULTATION,EntityType.MESSAGE)
 

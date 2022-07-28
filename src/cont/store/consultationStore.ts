@@ -1,5 +1,5 @@
 import { Consultation } from "../../model/consultationModel";
-import store from "../../model/store";
+import store from "./store";
 
 export function getConsultationStore(
   consultationId: string

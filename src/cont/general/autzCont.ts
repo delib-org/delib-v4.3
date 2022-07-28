@@ -1,4 +1,4 @@
-import store from "../../model/store";
+import store from "../store/store";
 import { Authorizations } from "./authCont";
 export async function pageAuthorized(authorized:Array<Authorizations>):Promise<void>{
     try {

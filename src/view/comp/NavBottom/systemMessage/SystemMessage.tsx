@@ -1,6 +1,6 @@
 import m from 'mithril';
 import './systemMessage.scss'
-import store from '../../../../model/store';
+import store from '../../../../cont/store/store';
 
 export default function SystemMessage(){
     function handleCloseError(){

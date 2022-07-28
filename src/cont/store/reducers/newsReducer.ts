@@ -1,6 +1,6 @@
-import { News } from "../../model/newsModel";
-import store from "../../model/store";
-import { responseToError } from "../firebase/consultations/consultationsDBGet";
+import { News } from "../../../model/newsModel";
+import store from "../store";
+import { responseToError } from "../../firebase/consultations/consultationsDBGet";
 
 export function updateNews(newItem: News): void {
   try {

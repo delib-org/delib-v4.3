@@ -2,7 +2,7 @@ import m, { Vnode } from "mithril";
 import {
   getSectionSelected,
   selectSection,
-} from "../../../cont/reducers/consultationsReducer";
+} from "../../../cont/store/reducers/consultationsReducer";
 import { Section } from "../../../model/consultationModel";
 import { transWord } from "../../../model/lang";
 
