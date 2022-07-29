@@ -1,7 +1,12 @@
 import { defaults } from "joi";
 import m, { Component, Vnode } from "mithril";
 import store from "../../../cont/store/store";
-import { EntityType, GroupNews, News } from "../../../model/newsModel";
+import {
+  EntityType,
+  GroupNews,
+  News,
+  NewsItem,
+} from "../../../model/newsModel";
 import ConsultationCard from "./consultationCard/ConsultationCard";
 
 export default function NewsRoll() {
@@ -10,12 +15,20 @@ export default function NewsRoll() {
       <div>
         {/* @ts-ignore */}
         {store.news.groups
-          .sort((a:GroupNews, b:GroupNews) => b.last_update.seconds - a.last_update.seconds)
-          .map((newy: GroupNews) =>
-            newy.entityType === EntityType.CONSULTATION ? (
-              <NewsSwitch key={newy.id} newsItem={newy} />
-            ) : null
-          )}
+          .sort(
+            (a: GroupNews, b: GroupNews) =>
+              b.last_update.seconds - a.last_update.seconds
+          )
+          .map((groupNews: GroupNews) => {
+            return (
+              <div className="groupNews">
+                <h3>{groupNews.group.title}</h3>
+                {groupNews.messages.map((newsItem: NewsItem) => {
+                  return <NewsSwitch newsItem={newsItem} />;
+                })}
+              </div>
+            );
+          })}
       </div>
     ),
   };
@@ -24,10 +37,8 @@ export default function NewsRoll() {
 interface State {}
 
 interface Attrs {
-  newsItem: News;
+  newsItem: NewsItem;
 }
-
-
 
 function NewsSwitch(): Component<Attrs, State> {
   return {
@@ -35,13 +46,11 @@ function NewsSwitch(): Component<Attrs, State> {
       const { newsItem } = vnode.attrs;
       switch (newsItem.entityType) {
         case EntityType.CONSULTATION:
-         
           return (
-            <ConsultationCard
-              consultation={newsItem.group}
-              news={newsItem.text}
-            />
+            <p>{newsItem.message}</p>
           );
+          case EntityType.MESSAGE:
+            return <p>{newsItem.message}</p>
         default:
           return null;
       }

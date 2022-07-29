@@ -66,7 +66,7 @@ export async function listenToNewsFromGroup(
   groupId: string
 ): Promise<Function> {
   try {
-    console.log(store)
+  
     if (!groupId) throw new Error("no groupId");
     console.log("listenToNewsFromGroup", groupId);
     const newRef = collection(DB, "news");
@@ -80,7 +80,7 @@ export async function listenToNewsFromGroup(
 
             value.id = change.doc.id;
             value.group.id = change.doc.data().groupId;
-            console.log(value);
+          
             if (change.type === "added") {
               // updateStoreNews(value);
               const newsItem = new NewsItem(value.id, value.text, value.entityType,value.creator,value.update);
