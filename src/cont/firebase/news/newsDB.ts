@@ -21,7 +21,7 @@ import {
 import {
   EntityType,
   EntityTypeSchema,
-  MessageSchema,
+  MessageTextSchema,
   NewsSchema,
 } from "../../../model/newsModel";
 import Joi from "joi";
@@ -109,7 +109,7 @@ function validateEntity(entity: any, entityType: EntityType): { error?: any } {
         if (cons.error) throw cons.error;
         return {};
       case EntityType.MESSAGE:
-        const mess = MessageSchema.validate(entity);
+        const mess = MessageTextSchema.validate(entity);
         if (mess.error) throw mess.error;
         return {};
       default:

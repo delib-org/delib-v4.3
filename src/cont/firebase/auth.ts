@@ -58,7 +58,7 @@ export function onAuth() {
             }
           }
         }
-        redirect();
+        redirect('/home');
       } else {
         console.info("User is signed out.");
         store.user = null;

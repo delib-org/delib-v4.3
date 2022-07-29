@@ -1,11 +1,13 @@
 
-
 export function updateArray(
   oldArray: Array<any>,
   newElement: any,
   toDelete?: boolean
 ): Array<any> {
   try {
+    if(!('id' in newElement)) throw new Error('new element is missing id')
+ 
+
     const _oldArray = [...oldArray];
     const index = _oldArray.findIndex((elm) => elm.id === newElement.id);
 

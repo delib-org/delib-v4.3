@@ -29,5 +29,5 @@ export const NewsSchema = Joi.object({
     update:FirebaseTimeSchema
 })
 
-export const MessageSchema = Joi.string().required();
+export const MessageTextSchema = Joi.string().required();
 
