@@ -1,6 +1,5 @@
 import Joi from "joi";
 import { UserProps } from "../cont/store/store";
-import { Consultation, ConsultationSchema } from "./consultationModel";
 import { FirebaseTime, FirebaseTimeSchema } from "./timeModel";
 import { UserSchema } from "./userModel";
 
@@ -15,9 +14,9 @@ export interface MessageProps{
 
 export const MessageSchema = Joi.object({
     message:Joi.string().required(),
-    created:FirebaseTimeSchema,
-    updated:FirebaseTimeSchema,
-    creator:UserSchema,
+    created:FirebaseTimeSchema.required(),
+    updated:FirebaseTimeSchema.required(),
+    creator:UserSchema.required(),
     groupId:Joi.string().required(),
     id:Joi.string().required(),
 })

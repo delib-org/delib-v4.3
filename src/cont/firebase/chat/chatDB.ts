@@ -3,21 +3,22 @@ import { DB } from "../config";
 import {
   doc,
   setDoc,
+  deleteDoc,
   collection,
   addDoc,
   serverTimestamp,
   Timestamp,
-  document,
   query,
   where,
   onSnapshot,
   orderBy,
+  limit,
 } from "firebase/firestore";
 import { responseToError } from "../consultations/consultationsDBGet";
-import Joi from "joi";
-import store, { MessageProps } from '../../../model/messagesModel';
+import Joi, { func } from "joi";
+import { MessageSchema } from "../../../model/messagesModel";
 import { updateArray } from "../../general/general";
-import { MessageTextSchema } from "../../../model/newsModel";
+import store from "../../store/store";
 
 interface AddMessageProps {
   message: string;
@@ -46,32 +47,52 @@ export async function addMessage(props: AddMessageProps) {
   }
 }
 
+export async function deleteMessage(messageId: string) {
+  try {
+    await deleteDoc(doc(DB, "messages", messageId));
+  } catch (error) {
+    responseToError(error);
+  }
+}
+
 export function listenToChat(groupId: string): Function {
   try {
     const startTime = Timestamp.fromDate(
       new Date(store.chat.last_update.seconds * 1000)
     );
-    console.log(startTime);
+
     const chatRef = collection(DB, "messages");
     const q = query(
       chatRef,
       where("groupId", "==", groupId),
       where("updated", ">", startTime),
-      orderBy("updated")
+      orderBy("updated"),
+      limit(20)
     );
     return onSnapshot(q, (messagesDB) => {
-      messagesDB.forEach((messageDB) => {
+      messagesDB.docChanges().forEach((change) => {
         try {
-          const messageObj = messageDB.data();
-          messageObj.id = messageDB.id;
+          const messageObj = change.doc.data();
+          messageObj.id = change.doc.id;
+          const { error } = MessageSchema.validate(messageObj);
+          if (error) throw new Error(`${error} in ${messageObj.id}`);
 
-          const { error } = MessageTextSchema.validate(messageObj);
-          if (error) throw error;
+          if (change.type === "added") {
+            store.chat.messages = updateArray(store.chat.messages, messageObj);
+          }
+          if (change.type === "modified") {
+            store.chat.messages = updateArray(store.chat.messages, messageObj);
+          }
+          if (change.type === "removed") {
+            store.chat.messages = updateArray(store.chat.messages, messageObj,true);
+          }
 
           if (messageObj && messageObj.updated && messageObj.updated.seconds) {
             console.log("Last update:", messageObj.updated.seconds);
 
-            store.chat.messages = updateArray(store.chat.messages, messageObj);
+            
+            //if last message update time, is bigger than last saved message on store,
+            // update store
             if (store.chat.last_update.seconds < messageObj.updated.seconds) {
               store.chat.last_update.seconds = messageObj.updated.seconds;
             }
@@ -80,7 +101,7 @@ export function listenToChat(groupId: string): Function {
           responseToError(error);
         }
       });
-
+      console.log(store.chat.messages);
       m.redraw();
     });
   } catch (error) {
