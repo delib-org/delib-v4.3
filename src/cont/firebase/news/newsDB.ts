@@ -3,6 +3,7 @@ import { DB } from "../config";
 import {
   doc,
   setDoc,
+  limit,
   collection,
   addDoc,
   serverTimestamp,
@@ -22,11 +23,15 @@ import {
   EntityType,
   EntityTypeSchema,
   MessageTextSchema,
+  News,
+  NewsItem,
   NewsSchema,
 } from "../../../model/newsModel";
 import Joi from "joi";
 import { updateArray } from "../../general/general";
 import { saveStore } from "../../store/reducers/storeReducer";
+import { updateStoreNews } from "../../store/reducers/newsReducer";
+
 
 export async function addNews(
   consultationId: string,
@@ -38,7 +43,7 @@ export async function addNews(
     if (entityType === EntityType.CONSULTATION) {
       const { error } = validateEntity(group, entityType);
       if (error) throw error;
-    } else if(entityType === EntityType.MESSAGE){
+    } else if (entityType === EntityType.MESSAGE) {
       const { error } = validateEntity(message, entityType);
       if (error) throw error;
     }
@@ -61,10 +66,11 @@ export async function listenToNewsFromGroup(
   groupId: string
 ): Promise<Function> {
   try {
+    console.log(store)
     if (!groupId) throw new Error("no groupId");
     console.log("listenToNewsFromGroup", groupId);
     const newRef = collection(DB, "news");
-    const q = query(newRef, where("groupId", "==", groupId));
+    const q = query(newRef, where("groupId", "==", groupId), limit(10));
     return onSnapshot(q, (newsDB) => {
       newsDB.docChanges().forEach((change) => {
         try {
@@ -72,19 +78,21 @@ export async function listenToNewsFromGroup(
             const { value, error } = NewsSchema.validate(change.doc.data());
             if (error) throw error;
 
-            if (value.entityType === EntityType.CONSULTATION) {
-              value.id = change.doc.id;
-              value.group.id = change.doc.data().groupId;
-              if (change.type === "added") {
-                store.news = updateArray(store.news, value);
+            value.id = change.doc.id;
+            value.group.id = change.doc.data().groupId;
+            console.log(value);
+            if (change.type === "added") {
+              // updateStoreNews(value);
+              const newsItem = new NewsItem(value.id, value.text, value.entityType,value.creator,value.update);
+              store.news.setNewsItem(value.group,newsItem);
 
-                store.consultations.groups = updateArray(
-                  store.consultations.groups,
-                  value.group
-                );
-                m.redraw();
-                saveStore("listenToNewsFromGroup");
-              }
+              store.consultations.groups = updateArray(
+                store.consultations.groups,
+                value.group
+              );
+
+              m.redraw();
+              saveStore("listenToNewsFromGroup");
             }
           }
         } catch (error) {
@@ -119,3 +127,4 @@ function validateEntity(entity: any, entityType: EntityType): { error?: any } {
     return { error };
   }
 }
+

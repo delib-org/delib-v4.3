@@ -1,7 +1,7 @@
 import { defaults } from "joi";
 import m, { Component, Vnode } from "mithril";
 import store from "../../../cont/store/store";
-import { EntityType, News, News } from "../../../model/newsModel";
+import { EntityType, GroupNews, News } from "../../../model/newsModel";
 import ConsultationCard from "./consultationCard/ConsultationCard";
 
 export default function NewsRoll() {
@@ -9,9 +9,9 @@ export default function NewsRoll() {
     view: () => (
       <div>
         {/* @ts-ignore */}
-        {store.news
-          .sort((a:News, b:News) => b.update.seconds - a.update.seconds)
-          .map((newy: News) =>
+        {store.news.groups
+          .sort((a:GroupNews, b:GroupNews) => b.last_update.seconds - a.last_update.seconds)
+          .map((newy: GroupNews) =>
             newy.entityType === EntityType.CONSULTATION ? (
               <NewsSwitch key={newy.id} newsItem={newy} />
             ) : null

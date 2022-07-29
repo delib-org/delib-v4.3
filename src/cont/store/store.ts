@@ -1,7 +1,7 @@
 import { Consultation, SectionProps } from "../../model/consultationModel";
 import { FirebaseTime } from "../../model/timeModel";
 import { Membership } from "../../model/membershipModel";
-import { News } from "../../model/newsModel";
+import { GroupNews, NewsStore } from "../../model/newsModel";
 
 import { MessageProps } from "../../model/messagesModel";
 
@@ -40,7 +40,7 @@ export interface StoreProps{
     }
     memberIn:Membership[];
     memberClean:Function[];
-    news:News[],
+    news:NewsStore,
     lang:Lang;
 }
 const store:StoreProps = {
@@ -50,7 +50,7 @@ const store:StoreProps = {
   consultations:{groups:[],last_update:new Date(0),sections:[]},
   chat:{messages:[],last_update:{seconds:0, nanoseconds:0},last_meesage_created:{seconds:0, nanoseconds:0}},
   memberIn:[],
-  news:[],
+  news:new NewsStore(),
   memberClean:[],
   lang:Lang.HE
 };
