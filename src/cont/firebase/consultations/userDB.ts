@@ -10,6 +10,7 @@ import {
 import { User } from "firebase/auth";
 import { responseToError } from "./consultationsDBGet";
 import { UserSchema } from "../../../model/userModel";
+import { getRandomColor } from "../../general/general";
 
 export async function updateUserToDB(user: User) {
   try {
@@ -21,7 +22,7 @@ export async function updateUserToDB(user: User) {
     value.lastEnterd = new Date();
     await setDoc(
       userRef,
-      { displayName, uid, email, photoURL, isAnonymous , lastEnterd:serverTimestamp()},
+      { displayName, uid, email, photoURL, isAnonymous , lastEnterd:serverTimestamp(), userColor:getRandomColor()},
       { merge: true }
     );
  
