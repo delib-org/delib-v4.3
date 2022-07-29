@@ -47,23 +47,23 @@ export function onAuth() {
         unsubMembership = listenToMemberships(user.uid);
 
         //get store from local storage
-        let storeLocal: any = localStorage.getItem("store");
-        if (storeLocal) {
-          storeLocal = JSON.parse(storeLocal);
-          if (storeLocal.user) {
-            const userId = storeLocal.user.uid;
-            if (userId === user.uid) {
-              store.memberIn = storeLocal.memberIn;
-              store.consultations = storeLocal.consultations;
-            }
-          }
-        }
+        // let storeLocal: any = localStorage.getItem("store");
+        // if (storeLocal) {
+        //   storeLocal = JSON.parse(storeLocal);
+        //   if (storeLocal.user) {
+        //     const userId = storeLocal.user.uid;
+        //     if (userId === user.uid) {
+        //       store.memberIn = storeLocal.memberIn;
+        //       store.consultations = storeLocal.consultations;
+        //     }
+        //   }
+        // }
         redirect('/home');
       } else {
         console.info("User is signed out.");
         store.user = null;
         redirect("/login");
-        localStorage.removeItem("store");
+        // localStorage.removeItem("store");
         clenaMembership();
 
         unsubMembership();

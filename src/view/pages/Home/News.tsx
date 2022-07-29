@@ -1,5 +1,7 @@
-import { defaults } from "joi";
+import { defaults, func } from "joi";
 import m, { Component, Vnode } from "mithril";
+import { responseToError } from "../../../cont/firebase/consultations/consultationsDBGet";
+import { timeParse } from "../../../cont/general/general";
 import store from "../../../cont/store/store";
 import {
   EntityType,
@@ -10,6 +12,14 @@ import {
 import ConsultationCard from "./consultationCard/ConsultationCard";
 
 export default function NewsRoll() {
+
+  function handleNavigate(consultationId){
+    try {
+      m.route.set(`/consultation/${consultationId}`)
+    } catch (error) {
+      responseToError(error)
+    }
+  }
   return {
     view: () => (
       <div>
@@ -21,9 +31,9 @@ export default function NewsRoll() {
           )
           .map((groupNews: GroupNews) => {
             return (
-              <div className="groupNews">
+              <div className="groupNews" onclick={()=>handleNavigate(groupNews.groupId)}>
                 <h3>{groupNews.group.title}</h3>
-                {groupNews.messages.map((newsItem: NewsItem) => {
+                {groupNews.messages.sort((a,b)=>b.update.seconds - a.update.seconds).map((newsItem: NewsItem) => {
                   return <NewsSwitch newsItem={newsItem} />;
                 })}
               </div>
@@ -47,10 +57,10 @@ function NewsSwitch(): Component<Attrs, State> {
       switch (newsItem.entityType) {
         case EntityType.CONSULTATION:
           return (
-            <p>{newsItem.message}</p>
+            <p>{`${timeParse(new Date(newsItem.update.seconds*1000))} - קבוצה: ${newsItem.message}`}</p>
           );
           case EntityType.MESSAGE:
-            return <p>{newsItem.message}</p>
+            return <p>{`${timeParse(new Date(newsItem.update.seconds*1000))} - הודעה: ${newsItem.message}`}</p>
         default:
           return null;
       }

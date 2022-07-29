@@ -1,6 +1,15 @@
 .groupNews{
-    padding: 20px;
+    padding: 10px 20px;
     border-radius: 5px;
     background-color: var(--white);
     margin: 5px;
+    cursor: pointer;
+    user-select: none;
+    h3{
+        color: $subTitleColor;
+    }
+    p{
+        margin: 2px 0px;
+        color: $subTextColor;
+    }
 }

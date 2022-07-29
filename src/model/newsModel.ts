@@ -81,7 +81,8 @@ export class GroupNews{
     this.last_update = group.time.updated;
   }
   setNewsItem(newsItem:NewsItem){
-    this.messages = updateArray(this.messages, newsItem)
+    this.messages = updateArray(this.messages, newsItem);
+    this.last_update = newsItem.update
   }
 }
 

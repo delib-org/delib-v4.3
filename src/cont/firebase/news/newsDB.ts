@@ -3,6 +3,7 @@ import { DB } from "../config";
 import {
   doc,
   setDoc,
+  orderBy,
   limit,
   collection,
   addDoc,
@@ -47,7 +48,7 @@ export async function addNews(
       const { error } = validateEntity(message, entityType);
       if (error) throw error;
     }
-
+console.log('saving a message!!!!!!!!!')
     const newsRef = collection(DB, "news");
     await addDoc(newsRef, {
       text: message,
@@ -70,7 +71,7 @@ export async function listenToNewsFromGroup(
     if (!groupId) throw new Error("no groupId");
     console.log("listenToNewsFromGroup", groupId);
     const newRef = collection(DB, "news");
-    const q = query(newRef, where("groupId", "==", groupId), limit(10));
+    const q = query(newRef, where("groupId", "==", groupId),orderBy('update','desc'), limit(10));
     return onSnapshot(q, (newsDB) => {
       newsDB.docChanges().forEach((change) => {
         try {
@@ -91,7 +92,7 @@ export async function listenToNewsFromGroup(
                 value.group
               );
 
-              m.redraw();
+             
               saveStore("listenToNewsFromGroup");
             }
           }
@@ -100,6 +101,7 @@ export async function listenToNewsFromGroup(
         }
       });
       console.log(store.news);
+      m.redraw();
     });
   } catch (error) {
     responseToError(error);

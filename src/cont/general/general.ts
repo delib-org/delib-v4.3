@@ -1,3 +1,5 @@
+import { TimeSchema } from "../../model/generalModel";
+
 export function updateArray(
   oldArray: Array<any>,
   newElement: any,
@@ -26,8 +28,15 @@ export function updateArray(
 
 export function timeParse(time: Date): string {
   try {
+  
+    const {error} = TimeSchema.validate(time);
+    if(error) throw error;
+    
+    const dif = new Date().getTime() - time.getTime();
+    const hourDif = Math.floor((dif/1000)/(60*60));
+
     return (
-      time.toDateString() +
+      `${hourDif>24?time.toDateString():''}` +
       " " +
       ("0" + time.getHours()).slice(-2) +
       ":" +

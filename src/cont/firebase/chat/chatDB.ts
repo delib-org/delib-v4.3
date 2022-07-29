@@ -58,7 +58,7 @@ export async function addMessage(props: AddMessageProps) {
           updated: serverTimestamp(),
         }),
       ]);
-    //   await addNews(groupId, message, consultation, EntityType.MESSAGE);
+   
     }
   } catch (error) {
     responseToError(error);

@@ -23,7 +23,7 @@ export default function Chat(vnodeInit: Vnode<Attrs, State>) {
     ev.preventDefault();
     const message = ev.target.message.value;
     if (message) {
-      addNews(consultation.id, message, consultation, EntityType.MESSAGE);
+    
       await addMessage({ message, groupId: consultation.id });
       ev.target.reset();
     }
