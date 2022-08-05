@@ -45,7 +45,7 @@ export default function listenToMemberships(userId: string): Function {
           }
         });
 
-        localStorage.setItem("store", JSON.stringify(store));
+        // localStorage.setItem("store", JSON.stringify(store));
       } catch (error) {
         console.error(error);
       }

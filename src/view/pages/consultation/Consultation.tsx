@@ -11,7 +11,7 @@ import { Consultation, Section } from "../../../model/consultationModel";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
 import Chat from "./Chat/Chat";
 import ConsultationNav from "./ConsultationNav";
-import ConsultationHeader from './ConsultationHeader';
+import ConsultationHeader from "./ConsultationHeader";
 
 //unsubs
 let unsubSections = () => {},
@@ -35,12 +35,12 @@ export default function Consultation() {
       const section = m.route.param("section");
 
       const consultation = getConsultationStore(consultationId);
+      console.log(consultation)
 
-   
       return (
         <div className="page consultation">
-            {/* @ts-ignore */}
-         <ConsultationHeader consultation={consultation} />
+          {/* @ts-ignore */}
+          <ConsultationHeader consultation={consultation} />
           {/* @ts-ignore */}
           <ConsultationNav section={section} />
           {consultation
@@ -64,6 +64,7 @@ function ConsultationSwitch(
   try {
     switch (consultationSection) {
       case Section.CHAT:
+        // @ts-ignore
         return <Chat consultation={consultation} />;
       default:
         return null;
@@ -86,7 +87,6 @@ function useConsultationSection(consultationId: string): Section {
 
     return consultationSection.selectedSection;
   } catch (error) {
- 
     return Section.INTRO;
   }
 }

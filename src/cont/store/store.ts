@@ -1,9 +1,9 @@
 import { Consultation, SectionProps } from "../../model/consultationModel";
 import { FirebaseTime } from "../../model/timeModel";
 import { Membership } from "../../model/membershipModel";
-import { GroupNews, NewsStore } from "../../model/newsModel";
 
 import { MessageProps } from "../../model/messagesModel";
+import { NewsStore } from "../../model/newsModel";
 
 export interface UserProps{
   displayName:string |null,
@@ -58,7 +58,7 @@ const store:StoreProps = {
 export default store;
 
 export function saveStoreToLocal(){
-  localStorage.setItem('store',JSON.stringify(store))
+  // localStorage.setItem('store',JSON.stringify(store))
 }
 
 

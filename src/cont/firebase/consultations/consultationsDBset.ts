@@ -3,6 +3,7 @@ import { DB } from "../config";
 import {
   doc,
   setDoc,
+  updateDoc,
   collection,
   addDoc,
   serverTimestamp,
@@ -25,6 +26,8 @@ interface SetConsultationProps {
   description: string;
   groupType: GroupType;
   sections: Section[];
+  update: boolean;
+  id?: string;
 }
 
 interface setConsultationReturn {
@@ -38,19 +41,35 @@ export async function setConsultation(
   try {
     if (store.user === null) throw new Error("User must be logged-in");
 
-    const { title, description, groupType, sections } = consultationObj;
+    const { title, description, groupType, sections, update, id } =
+      consultationObj;
 
-    const consultationRef = await addDoc(collection(DB, "consultations"), {
-      title,
-      description,
-      groupType,
-      creator: store.user,
-      time: {
-        created: serverTimestamp(),
-        updated: serverTimestamp(),
-      },
-    });
-    
+    let consultationRef;
+
+    if (update && id) {
+      consultationRef = await updateDoc(doc(DB, "consultations", id), {
+        title,
+        description,
+        groupType,
+        time: {
+          updated: serverTimestamp(),
+        },
+      });
+    } else {
+      consultationRef = await addDoc(collection(DB, "consultations"), {
+        title,
+        description,
+        groupType,
+        creator: store.user,
+        time: {
+          created: serverTimestamp(),
+          updated: serverTimestamp(),
+        },
+      });
+    }
+    if (!id || consultationRef?.id)
+      throw new Error("the consulation do not have an ID");
+
     const consultationObj2: Consultation = {
       title,
       description,
@@ -60,11 +79,11 @@ export async function setConsultation(
         created: { seconds: new Date().getTime() / 1000, nanoseconds: 0 },
         updated: { seconds: new Date().getTime() / 1000, nanoseconds: 0 },
       },
-      id: consultationRef.id,
+      id: consultationRef?.id || id,
     };
     updateArray(store.consultations.groups, consultationObj2);
     const newSections: SectionProps = {
-      id: consultationRef.id,
+      id: consultationRef?.id || id,
       sections,
       selectedSection: Section.INTRO,
     };
@@ -78,23 +97,24 @@ export async function setConsultation(
         created: { seconds: new Date().getTime() / 1000, nanoseconds: 0 },
         updated: { seconds: new Date().getTime() / 1000, nanoseconds: 0 },
       },
+      id:consultationRef?.id||id
     };
 
     await Promise.all([
-      setSections(consultationRef.id, sections),
-      setMembership(consultationRef.id),
+      setSections(consultationRef?.id||id, sections),
+      setMembership(consultationRef?.id||id),
       addNews(
-        consultationRef.id,
-        "התייעצות חדשה נוצרה",
+        consultationRef?.id||id,
+        (update?"התייעצות עודכנה":"התייעצות חדשה נוצרה"),
         consultationObj3,
         EntityType.CONSULTATION
       ),
     ]);
-    console.time("waiting");
-    await wait(1000);
-    console.timeEnd("waiting");
+    // console.time("waiting");
+    // await wait(1000);
+    // console.timeEnd("waiting");
     m.redraw();
-    return { consultationId: consultationRef.id, success: true };
+    return { consultationId: consultationRef?.id || id, success: true };
   } catch (error: any) {
     console.error(error);
     store.error = { message: error.message, type: ErrorType.ERROR };
