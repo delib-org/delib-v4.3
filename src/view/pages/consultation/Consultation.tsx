@@ -6,9 +6,14 @@ import {
 import { getConsultationStore } from "../../../cont/store/consultationStore";
 import store from "../../../cont/store/store";
 import { Consultation, Section } from "../../../model/consultationModel";
+
+//components
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
 import Chat from "./Chat/Chat";
 import ConsultationNav from "./ConsultationNav";
+import ConsultationHeader from './ConsultationHeader';
+
+//unsubs
 let unsubSections = () => {},
   unsubConsultation = () => {};
 
@@ -33,11 +38,9 @@ export default function Consultation() {
 
    
       return (
-        <div className="page">
-          <h1>
+        <div className="page consultation">
             {/* @ts-ignore */}
-            <m.route.Link href="/home">{consultation?.title}</m.route.Link>
-          </h1>
+         <ConsultationHeader consultation={consultation} />
           {/* @ts-ignore */}
           <ConsultationNav section={section} />
           {consultation

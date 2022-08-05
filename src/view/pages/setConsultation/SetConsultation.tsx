@@ -1,8 +1,9 @@
 import m, { Vnode } from "mithril";
 import { setConsultation } from "../../../cont/firebase/consultations/consultationsDBset";
-import { Section } from "../../../model/consultationModel";
+import { Consultation, Section } from "../../../model/consultationModel";
 import store from "../../../cont/store/store";
 import SystemMessage from "../../comp/NavBottom/systemMessage/SystemMessage";
+import { getConsultationSectionsStore, getConsultationStore } from "../../../cont/store/consultationStore";
 
 interface State {
   consultationId: string;
@@ -60,7 +61,12 @@ export default function SetConsultation() {
       // vnode.state.consultationId = consultationId;
     },
     view: (vnode: Vnode<Attrs, State>) => {
-      const { consultationId } = vnode.state;
+      const { consultationId } = m.route.param();
+      const consultation = getConsultationStore(consultationId);
+      const sections = getConsultationSectionsStore(consultationId);
+      console.log(consultation);
+      console.log(sections)
+     
       return (
         <div className="page setConsl">
           <div className="header">
@@ -75,19 +81,21 @@ export default function SetConsultation() {
                   name="title"
                   placeholder="נושא ההתיעצות"
                   required
+                  value={consultation?.title || ''}
                 />
                 <label>הסבר</label>
                 <textarea
                   name="description"
                   placeholder="הסבר על ההתיעצות"
                   required
+                  value={consultation?.description||''}
                 />
-                <select name="groupType">
-                  <option value={GroupType.PUBLIC}>פתוחה</option>
-                  <option value={GroupType.CLOSE}>
+                <select name="groupType" value={consultation?.groupType}>
+                  <option value={GroupType.PUBLIC} selected={isSelected(consultation,GroupType.PUBLIC)}>פתוחה</option>
+                  <option value={GroupType.CLOSE} selected={isSelected(consultation,GroupType.CLOSE)}>
                     סגורה - דרוש אישור מנהלים כדי להצטרף
                   </option>
-                  <option value={GroupType.SECRET}>
+                  <option value={GroupType.SECRET} selected={isSelected(consultation,GroupType.SECRET)}>
                     סודית - יש צורך לקבל הזמנה
                   </option>
                 </select>
@@ -99,6 +107,7 @@ export default function SetConsultation() {
                       name="sections"
                       id="info"
                       value={Section.INFO}
+                      checked={isChecked(sections, Section.INFO)}
                     />
                     <label htmlFor="info">משתתפים יכולים להוסיף מידע</label>
                   </div>
@@ -108,11 +117,12 @@ export default function SetConsultation() {
                       name="sections"
                       id="chat"
                       value={Section.CHAT}
+                      checked={isChecked(sections, Section.CHAT)}
                     />
                     <label htmlFor="chat">משתתפים יכולים לשוחח</label>
                   </div>
                 </div>
-                <button type="submit">יצירת התייעצות</button>
+                <button type="submit">{!consultation?"יצירת התייעצות":"עדכון התייעצות"}</button>
               </form>
             </div>
           </main>
@@ -122,4 +132,24 @@ export default function SetConsultation() {
       );
     },
   };
+}
+
+function isSelected(consultation:Consultation|undefined, groupType:GroupType):'selected'|false{
+  try {
+    if(!consultation) throw new Error('No consultation')
+    return consultation?.groupType === groupType?"selected":false
+  } catch (error) {
+    console.error(error)
+    return false
+  }
+}
+
+function isChecked(sections:Section[]|undefined,section:Section ):boolean{
+  try {
+    if(sections === undefined) throw new Error('couldnt find sections')
+    return sections.includes(section)
+  } catch (error) {
+    console.error(error)
+    return false
+  }
 }
