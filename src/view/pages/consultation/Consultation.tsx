@@ -35,7 +35,7 @@ export default function Consultation() {
       const section = m.route.param("section");
 
       const consultation = getConsultationStore(consultationId);
-      console.log(consultation)
+     
 
       return (
         <div className="page consultation">

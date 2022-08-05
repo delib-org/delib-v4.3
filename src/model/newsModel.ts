@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { responseToError } from "../cont/firebase/consultations/consultationsDBGet";
 import { updateArray } from "../cont/general/general";
-import { UserProps } from "../cont/store/store";
+import store, { UserProps } from "../cont/store/store";
 import { Consultation, ConsultationSchema } from "./consultationModel";
 import { FirebaseTime, FirebaseTimeSchema } from "./timeModel";
 import { UserSchema } from "./userModel";
@@ -74,7 +74,6 @@ export class GroupNews {
   last_update: FirebaseTime;
 
   constructor(group: Consultation) {
-    console.log("creating group news", group.title);
     this.id = this.groupId = group.id;
     this.group = group;
     this.messages = [];
@@ -84,11 +83,14 @@ export class GroupNews {
     this.messages = updateArray(this.messages, newsItem);
     if (this.last_update.seconds < newsItem.update.seconds)
       this.last_update = newsItem.update;
-    console.log(
-      `${this.group.title}, ${newsItem.message}, last update: ${Math.floor(
-        this.last_update.seconds / 1000
-      )}`
-    );
+  }
+  updateGroupTitle(groupTitle: string) {
+    try {
+      console.log('---- updating group title to ', groupTitle, 'from ', this.group.title)
+      this.group.title = groupTitle;
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
 
@@ -117,8 +119,10 @@ export class NewsStore {
         const newPosition = this.groups.length;
         this.setGroup(consultation);
         this.groups[newPosition].setNewsItem(newsItem);
+        
       } else {
         this.groups[groupIndex].setNewsItem(newsItem);
+        
       }
     } catch (error) {
       responseToError(error);

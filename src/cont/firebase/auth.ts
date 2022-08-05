@@ -28,7 +28,7 @@ export function AnonymousLogin() {
     });
 }
 
-let unsubMembership: Function = () => {};
+let unsubMembership: Function = () => {}, unsubConsu;
 export function onAuth() {
   onAuthStateChanged(auth, (user) => {
     try {

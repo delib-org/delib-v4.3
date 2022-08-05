@@ -31,7 +31,7 @@ export default function listenToMemberships(userId: string): Function {
 
             if (change.type === "added") {
               store.memberIn = updateArray(store.memberIn, value);
-              // listenToConsultation(value.id);
+              listenToConsultation(value.id);
               listenToNewsFromGroup(value.id);
             }
             if (change.type === "modified") {

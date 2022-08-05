@@ -1,4 +1,5 @@
 import m from "mithril";
+import Joi from "joi";
 import store, { ErrorType, saveStoreToLocal } from "../../store/store";
 import {
   collection,
@@ -18,7 +19,7 @@ import {
 
 //controls
 import { updateArray } from "../../general/general";
-import { saveStore } from "../../store/reducers/storeReducer";
+
 
 export function listenToConsultations() {
   try {
@@ -92,8 +93,12 @@ function updateConsultation(consultationDB: any, toDelete?: boolean): void {
   }
 }
 
+const consultationIdSchema = Joi.string().min(4).required()
+
 export function listenToConsultation(consultationId: string) {
   try {
+    const {error} = consultationIdSchema.validate(consultationId)
+ if(error) throw error;
  
     const consultationRef = doc(DB, "consultations", consultationId);
     return onSnapshot(consultationRef, (consultationDB) => {
@@ -106,13 +111,13 @@ export function listenToConsultation(consultationId: string) {
 
         const consultationObj = value;
         consultationObj.id = consultationId;
-  
+  console.log('updating consultation',consultationObj.title )
         store.consultations.groups = updateArray(
           store.consultations.groups,
           consultationObj
         );
       
-        saveStore('listenToConsultation')
+        // saveStore('listenToConsultation')
         m.redraw();
       } catch (error) {}
     });

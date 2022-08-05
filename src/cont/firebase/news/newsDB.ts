@@ -78,6 +78,8 @@ export async function listenToNewsFromGroup(
     return onSnapshot(q, (newsDB) => {
       newsDB.docChanges().forEach((change) => {
         try {
+          console.log('got new update in news')
+          console.log(change.doc.data())
           if (change.doc.data().update) {
             const { value, error } = NewsSchema.validate(change.doc.data());
             if (error) throw error;
@@ -96,11 +98,9 @@ export async function listenToNewsFromGroup(
               );
               store.news.setNewsItem(value.group, newsItem);
 
-              store.consultations.groups = updateArray(
-                store.consultations.groups,
-                value.group
-              );
+             
 
+              m.redraw();
               // saveStore("listenToNewsFromGroup");
             }
           }
