@@ -21,12 +21,7 @@ export default function NewsRoll() {
   }
 
   return {
-    oninit: () => {
-      console.log(store.news.groups);
-    },
-    onupdate: () => {
-      console.log(store.news.groups);
-    },
+   
     view: () => (
       <div>
         {/* @ts-ignore */}

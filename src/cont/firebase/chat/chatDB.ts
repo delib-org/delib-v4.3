@@ -110,7 +110,7 @@ export function listenToChat(groupId: string): Function {
           }
 
           if (messageObj && messageObj.updated && messageObj.updated.seconds) {
-            console.log("Last update:", messageObj.updated.seconds);
+         
 
             //if last message update time, is bigger than last saved message on store,
             // update store
@@ -122,7 +122,7 @@ export function listenToChat(groupId: string): Function {
           responseToError(error);
         }
       });
-      console.log(store.chat.messages);
+    
       m.redraw();
     });
   } catch (error) {

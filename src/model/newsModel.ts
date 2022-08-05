@@ -86,7 +86,7 @@ export class GroupNews {
   }
   updateGroupTitle(groupTitle: string) {
     try {
-      console.log('---- updating group title to ', groupTitle, 'from ', this.group.title)
+    
       this.group.title = groupTitle;
     } catch (error) {
       console.error(error);

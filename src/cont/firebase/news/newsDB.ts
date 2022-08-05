@@ -47,7 +47,7 @@ export async function addNews(
       const { error } = validateEntity(message, entityType);
       if (error) throw error;
     }
-    console.log("saving a message!!!!!!!!!");
+   
     const newsRef = collection(DB, "news");
     await addDoc(newsRef, {
       text: message,
@@ -67,7 +67,7 @@ export async function listenToNewsFromGroup(
 ): Promise<Function> {
   try {
     if (!groupId) throw new Error("no groupId");
-    console.log("listenToNewsFromGroup", groupId);
+   
     const newRef = collection(DB, "news");
     const q = query(
       newRef,
@@ -78,8 +78,7 @@ export async function listenToNewsFromGroup(
     return onSnapshot(q, (newsDB) => {
       newsDB.docChanges().forEach((change) => {
         try {
-          console.log('got new update in news')
-          console.log(change.doc.data())
+        
           if (change.doc.data().update) {
             const { value, error } = NewsSchema.validate(change.doc.data());
             if (error) throw error;
@@ -108,7 +107,7 @@ export async function listenToNewsFromGroup(
           responseToError(error);
         }
       });
-      console.log(store.news);
+     
       m.redraw();
     });
   } catch (error) {

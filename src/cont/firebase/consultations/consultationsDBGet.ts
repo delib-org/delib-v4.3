@@ -20,7 +20,6 @@ import {
 //controls
 import { updateArray } from "../../general/general";
 
-
 export function listenToConsultations() {
   try {
     if (!store.user)
@@ -93,17 +92,20 @@ function updateConsultation(consultationDB: any, toDelete?: boolean): void {
   }
 }
 
-const consultationIdSchema = Joi.string().min(4).required()
+const consultationIdSchema = Joi.string().min(4).required();
 
 export function listenToConsultation(consultationId: string) {
   try {
-    const {error} = consultationIdSchema.validate(consultationId)
- if(error) throw error;
- 
+    const { error } = consultationIdSchema.validate(consultationId);
+    if (error) throw error;
+
     const consultationRef = doc(DB, "consultations", consultationId);
     return onSnapshot(consultationRef, (consultationDB) => {
       try {
-        if(!consultationDB.exists()) throw new Error(`Consultation ${consultationId} does not exists on DB`)
+        if (!consultationDB.exists())
+          throw new Error(
+            `Consultation ${consultationId} does not exists on DB`
+          );
         const { value, error } = ConsultationSchema.validate(
           consultationDB.data()
         );
@@ -111,12 +113,12 @@ export function listenToConsultation(consultationId: string) {
 
         const consultationObj = value;
         consultationObj.id = consultationId;
-  console.log('updating consultation',consultationObj.title )
+    
         store.consultations.groups = updateArray(
           store.consultations.groups,
           consultationObj
         );
-      
+
         // saveStore('listenToConsultation')
         m.redraw();
       } catch (error) {}
@@ -139,17 +141,17 @@ export function listenToSections(consultationId: string) {
     );
     return onSnapshot(sectionsRef, (sectionsDB) => {
       try {
-       
         if (sectionsDB.exists()) {
           const { value, error } = SectionsSchema.validate(sectionsDB.data());
           if (error) throw error;
-       
+
           value.id = consultationId;
 
           store.consultations.sections = updateArray(
             store.consultations.sections,
             value
           );
+          m.redraw();
         }
       } catch (error) {
         responseToError(error);

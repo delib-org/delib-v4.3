@@ -84,8 +84,7 @@ export default function SetConsultation(InitVnode: Vnode<Attrs, State>) {
       const { consultationId } = m.route.param();
       const consultation = getConsultationStore(consultationId);
       const sections = getConsultationSectionsStore(consultationId);
-      console.log(consultation);
-      console.log(sections);
+    
       if (!vnode.state.isUpdating) {
         return (
           <div className="page setConsl">
