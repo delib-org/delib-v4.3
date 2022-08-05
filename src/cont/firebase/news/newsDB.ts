@@ -33,7 +33,6 @@ import { updateArray } from "../../general/general";
 import { saveStore } from "../../store/reducers/storeReducer";
 import { updateStoreNews } from "../../store/reducers/newsReducer";
 
-
 export async function addNews(
   consultationId: string,
   message: string,
@@ -48,7 +47,7 @@ export async function addNews(
       const { error } = validateEntity(message, entityType);
       if (error) throw error;
     }
-console.log('saving a message!!!!!!!!!')
+    console.log("saving a message!!!!!!!!!");
     const newsRef = collection(DB, "news");
     await addDoc(newsRef, {
       text: message,
@@ -67,11 +66,15 @@ export async function listenToNewsFromGroup(
   groupId: string
 ): Promise<Function> {
   try {
-  
     if (!groupId) throw new Error("no groupId");
     console.log("listenToNewsFromGroup", groupId);
     const newRef = collection(DB, "news");
-    const q = query(newRef, where("groupId", "==", groupId),orderBy('update','desc'), limit(10));
+    const q = query(
+      newRef,
+      where("groupId", "==", groupId),
+      orderBy("update", "desc"),
+      limit(10)
+    );
     return onSnapshot(q, (newsDB) => {
       newsDB.docChanges().forEach((change) => {
         try {
@@ -81,19 +84,24 @@ export async function listenToNewsFromGroup(
 
             value.id = change.doc.id;
             value.group.id = change.doc.data().groupId;
-          
+
             if (change.type === "added") {
               // updateStoreNews(value);
-              const newsItem = new NewsItem(value.id, value.text, value.entityType,value.creator,value.update);
-              store.news.setNewsItem(value.group,newsItem);
+              const newsItem = new NewsItem(
+                value.id,
+                value.text,
+                value.entityType,
+                value.creator,
+                value.update
+              );
+              store.news.setNewsItem(value.group, newsItem);
 
               store.consultations.groups = updateArray(
                 store.consultations.groups,
                 value.group
               );
 
-             
-              saveStore("listenToNewsFromGroup");
+              // saveStore("listenToNewsFromGroup");
             }
           }
         } catch (error) {
@@ -129,4 +137,3 @@ function validateEntity(entity: any, entityType: EntityType): { error?: any } {
     return { error };
   }
 }
-

@@ -66,56 +66,62 @@ export const NewsItemStoreSchema = Joi.object({
   update: FirebaseTimeSchema,
 });
 
-export class GroupNews{
-  id:string;
-  group:Consultation;
-  groupId:string;
+export class GroupNews {
+  id: string;
+  group: Consultation;
+  groupId: string;
   messages: NewsItem[];
-  last_update:FirebaseTime;
+  last_update: FirebaseTime;
 
-  constructor( group:Consultation){
+  constructor(group: Consultation) {
+    console.log("creating group news", group.title);
     this.id = this.groupId = group.id;
     this.group = group;
     this.messages = [];
-
     this.last_update = group.time.updated;
   }
-  setNewsItem(newsItem:NewsItem){
+  setNewsItem(newsItem: NewsItem) {
     this.messages = updateArray(this.messages, newsItem);
-    this.last_update = newsItem.update
+    if (this.last_update.seconds < newsItem.update.seconds)
+      this.last_update = newsItem.update;
+    console.log(
+      `${this.group.title}, ${newsItem.message}, last update: ${Math.floor(
+        this.last_update.seconds / 1000
+      )}`
+    );
   }
 }
 
-export class NewsStore{
-  last_update:FirebaseTime;
-  groups:GroupNews[];
+export class NewsStore {
+  last_update: FirebaseTime;
+  groups: GroupNews[];
 
-  constructor(){
-    this.last_update= {seconds:0,nanoseconds:0}
+  constructor() {
+    this.last_update = { seconds: 0, nanoseconds: 0 };
     this.groups = [];
   }
-  setGroup(consultation:Consultation){
+  setGroup(consultation: Consultation) {
     try {
       const newGroup = new GroupNews(consultation);
-      this.groups =  updateArray(this.groups, newGroup);
+      this.groups = updateArray(this.groups, newGroup);
     } catch (error) {
-      responseToError(error)
+      responseToError(error);
     }
   }
-  setNewsItem(consultation:Consultation, newsItem:NewsItem){
+  setNewsItem(consultation: Consultation, newsItem: NewsItem) {
     try {
-      const groupIndex = this.groups.findIndex(grp=>grp.groupId === consultation.id);
-      if(groupIndex === -1){
+      const groupIndex = this.groups.findIndex(
+        (grp) => grp.groupId === consultation.id
+      );
+      if (groupIndex === -1) {
         const newPosition = this.groups.length;
         this.setGroup(consultation);
         this.groups[newPosition].setNewsItem(newsItem);
       } else {
         this.groups[groupIndex].setNewsItem(newsItem);
       }
-
-      
     } catch (error) {
-      responseToError(error)
+      responseToError(error);
     }
   }
 }

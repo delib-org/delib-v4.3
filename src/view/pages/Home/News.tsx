@@ -32,7 +32,7 @@ export default function NewsRoll() {
           .map((groupNews: GroupNews) => {
             return (
               <div className="groupNews" onclick={()=>handleNavigate(groupNews.groupId)}>
-                <h3>{groupNews.group.title}</h3>
+                <h3>{groupNews.group.title} - {Math.floor(groupNews.last_update.seconds/1000)}</h3>
                 {groupNews.messages.sort((a,b)=>b.update.seconds - a.update.seconds).map((newsItem: NewsItem) => {
                   return <NewsSwitch newsItem={newsItem} />;
                 })}
