@@ -109,7 +109,7 @@ export default function SetConsultation(InitVnode: Vnode<Attrs, State>) {
                     required
                     value={consultation?.description || ""}
                   />
-                  <select name="groupType" value={consultation?.groupType}>
+                  <select name="groupType" value={consultation?.groupType || GroupType.PUBLIC}>
                     <option
                       value={GroupType.PUBLIC}
                       selected={isSelected(consultation, GroupType.PUBLIC)}>
@@ -148,6 +148,16 @@ export default function SetConsultation(InitVnode: Vnode<Attrs, State>) {
                       />
                       <label htmlFor="chat">משתתפים יכולים לשוחח</label>
                     </div>
+                    <div className="checkboxBox__item">
+                      <input
+                        type="checkbox"
+                        name="sections"
+                        id="vote"
+                        value={Section.VOTE}
+                        checked={isChecked(sections, Section.VOTE)}
+                      />
+                      <label htmlFor="vote">משתתפים יכולים להצביע על העדפות</label>
+                    </div>
                   </div>
                   <button type="submit">
                     {!consultation ? "יצירת התייעצות" : "עדכון התייעצות"}
@@ -171,7 +181,14 @@ function isSelected(
   groupType: GroupType
 ): "selected" | false {
   try {
-    if (!consultation) throw new Error("No consultation");
+    if (!consultation){
+   
+      if(groupType === GroupType.PUBLIC){
+     
+        return 'selected';
+      }
+      else return false;
+    };
     return consultation?.groupType === groupType ? "selected" : false;
   } catch (error) {
     console.error(error);

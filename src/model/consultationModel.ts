@@ -17,7 +17,8 @@ export const ConsultationSchema = Joi.object({
 export enum Section{
   INTRO = 'intro',
   INFO = 'info',
-  CHAT = 'chat'
+  CHAT = 'chat',
+  VOTE = 'vote'
 }
 
 export interface SectionProps{
@@ -27,7 +28,8 @@ export interface SectionProps{
 }
 
 export const SectionsSchema = Joi.object({
-  sections:Joi.array().items(Joi.string().valid(Section.CHAT,Section.INFO))
+  sections:Joi.array().items(Joi.string().valid(Section.CHAT,Section.INFO)),
+  id:Joi.string()
 })
 
 export interface Consultation{

@@ -13,12 +13,12 @@ import { DB } from "../config";
 
 //models
 import {
+  Consultation,
   ConsultationSchema,
   SectionsSchema,
 } from "../../../model/consultationModel";
 
 //controls
-import { updateArray } from "../../general/general";
 
 export function listenToConsultations() {
   try {
@@ -39,14 +39,19 @@ export function listenToConsultations() {
       try {
         consultationsDB.docChanges().forEach((change) => {
           try {
+            const consultation: any = change.doc;
             if (change.type === "added") {
-              updateConsultation(change.doc);
+              // updateConsultation(change.doc);
+
+              store.consultations.setConsultation({ consultation });
             }
             if (change.type === "modified") {
-              updateConsultation(change.doc);
+              // updateConsultation(change.doc);
+
+              store.consultations.setConsultation({ consultation });
             }
             if (change.type === "removed") {
-              updateConsultation(change.doc, true);
+              store.consultations.deleteConsultation({ consultation });
             }
           } catch (error) {
             responseToError(error);
@@ -69,7 +74,7 @@ export function responseToError(error: any) {
   m.redraw();
 }
 
-function updateConsultation(consultationDB: any, toDelete?: boolean): void {
+export function updateConsultation(consultationDB: any, toDelete?: boolean): void {
   try {
     const { value, error } = ConsultationSchema.validate(consultationDB.data());
     if (error) throw error;
@@ -78,14 +83,19 @@ function updateConsultation(consultationDB: any, toDelete?: boolean): void {
     consultationObj.id = consultationDB.id;
     consultationObj.members = null;
 
-    store.consultations.groups = updateArray(
-      store.consultations.groups,
-      consultationObj,
-      toDelete
-    );
+    // store.consultations.groups = updateArray(
+    //   store.consultations.groups,
+    //   consultationObj,
+    //   toDelete
+    // );
+    if (toDelete) {
+      store.consultations.deleteConsultation(consultationObj);
+    } else {
+      store.consultations.setConsultation({ consultation: consultationObj });
 
-    if (store.consultations.last_update < consultationObj.time.updated) {
-      store.consultations.last_update = consultationObj.time.updated;
+      if (store.consultations.last_update < consultationObj.time.updated) {
+        store.consultations.last_update = consultationObj.time.updated;
+      }
     }
   } catch (error) {
     console.error(error);
@@ -113,11 +123,12 @@ export function listenToConsultation(consultationId: string) {
 
         const consultationObj = value;
         consultationObj.id = consultationId;
-    
-        store.consultations.groups = updateArray(
-          store.consultations.groups,
-          consultationObj
-        );
+
+        // store.consultations.groups = updateArray(
+        //   store.consultations.groups,
+        //   consultationObj
+        // );
+        store.consultations.setConsultation({ consultation: consultationObj });
 
         // saveStore('listenToConsultation')
         m.redraw();
@@ -144,13 +155,13 @@ export function listenToSections(consultationId: string) {
         if (sectionsDB.exists()) {
           const { value, error } = SectionsSchema.validate(sectionsDB.data());
           if (error) throw error;
-
+console.log(value)
           value.id = consultationId;
-
-          store.consultations.sections = updateArray(
-            store.consultations.sections,
-            value
-          );
+          store.consultations.setConsultation({ sections: value });
+          // store.consultations.sections = updateArray(
+          //   store.consultations.sections,
+          //   value
+          // );
           m.redraw();
         }
       } catch (error) {

@@ -1,4 +1,5 @@
 import { TimeSchema } from "../../model/generalModel";
+import store from "../store/store";
 
 export function updateArray(
   oldArray: Array<any>,
@@ -6,6 +7,9 @@ export function updateArray(
   toDelete?: boolean
 ): Array<any> {
   try {
+    console.log(store.consultations)
+    console.log(newElement)
+    if(!newElement) throw new Error('No newElement')
     if (!("id" in newElement)) throw new Error("new element is missing id");
 
     const _oldArray = [...oldArray];

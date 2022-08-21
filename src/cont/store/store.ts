@@ -4,6 +4,7 @@ import { Membership } from "../../model/membershipModel";
 
 import { MessageProps } from "../../model/messagesModel";
 import { NewsStore } from "../../model/newsModel";
+import { Consultations } from "../../model/consultationsModel";
 
 export interface UserProps{
   displayName:string |null,
@@ -32,7 +33,7 @@ export interface StoreProps{
     counter:number
     user:UserProps | null;
     error:{message:string, type:ErrorType} | null;
-    consultations:{groups:Consultation[],last_update:FirebaseTime|Date,sections:SectionProps[]};
+    consultations:Consultations;
     chat:{
       messages:MessageProps[],
       last_update:FirebaseTime,
@@ -47,13 +48,14 @@ const store:StoreProps = {
   counter: 0,
   user: null,
   error:null,
-  consultations:{groups:[],last_update:new Date(0),sections:[]},
+  consultations:new Consultations(),
   chat:{messages:[],last_update:{seconds:0, nanoseconds:0},last_meesage_created:{seconds:0, nanoseconds:0}},
   memberIn:[],
   news:new NewsStore(),
   memberClean:[],
   lang:Lang.HE
 };
+console.log(store)
 
 export default store;
 

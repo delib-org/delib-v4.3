@@ -18,6 +18,9 @@ export function getConsultationSectionsStore(
   consultationId: string
 ): Array<Section> | undefined {
   try {
+    if(consultationId === 'new'){
+      return [];
+    }
     const sections = store.consultations.sections.find(
       (consultation) => consultation.id === consultationId
     );
